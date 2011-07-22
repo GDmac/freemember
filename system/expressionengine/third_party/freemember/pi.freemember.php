@@ -53,6 +53,11 @@ class Freemember
 			return 'Missing form_id parameter.';
 		}
 
+		if ($this->EE->config->item('allow_member_registration') == 'n')
+		{
+			return 'Member registration is disabled.';
+		}
+
 		$tag_vars[0] = array(
 			'username' => FALSE,
 			'password' => FALSE,
