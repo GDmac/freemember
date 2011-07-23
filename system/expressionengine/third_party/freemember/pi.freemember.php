@@ -75,7 +75,7 @@ class Freemember
 			$tag_vars[0]['error:'.$field_name] = FALSE;
 		}
 
-		if ($this->EE->input->post('form') == $form_id)
+		if ($this->EE->input->post('register_form') == $form_id)
 		{
 			if ( ! isset($_POST['username']))
 			{
@@ -145,7 +145,7 @@ class Freemember
 			'id' => $form_id,
 			'action' => $this->EE->functions->create_url($this->EE->uri->uri_string),
 			'hidden_fields' => array(
-				'form' => $form_id,
+				'register_form' => $form_id,
 				'return_url' => $this->EE->TMPL->fetch_param('return'),
 			),
 		));
@@ -177,7 +177,7 @@ class Freemember
 			$tag_vars[0]['error:'.$field_name] = FALSE;
 		}
 
-		if ($this->EE->input->post('form') == $form_id)
+		if ($this->EE->input->post('login_form') == $form_id)
 		{
 			$tag_vars[0]['email'] = $this->EE->input->post('email');
 			$tag_vars[0]['username'] = $this->EE->input->post('username');
@@ -224,7 +224,7 @@ class Freemember
 			'id' => $form_id,
 			'action' => $this->EE->functions->create_url($this->EE->uri->uri_string),
 			'hidden_fields' => array(
-				'form' => $form_id,
+				'login_form' => $form_id,
 				'return_url' => $this->EE->TMPL->fetch_param('return'),
 			),
 		));
