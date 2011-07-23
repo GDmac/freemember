@@ -68,6 +68,7 @@ class Freemember
 			'url' => FALSE,
 			'location' => FALSE,
 			'captcha' => FALSE,
+			'accept_terms' => FALSE,
 		);
 
 		foreach ($tag_vars[0] as $field_name => $value)
@@ -433,7 +434,7 @@ class Freemember
 
 		if ($this->EE->config->item('require_terms_of_service') == 'y')
 		{
-			if ( ! isset($_POST['accept_terms']))
+			if (empty($_POST['accept_terms']))
 			{
 				$cust_errors['accept_terms'] = lang('mbr_terms_of_service_required');
 			}
