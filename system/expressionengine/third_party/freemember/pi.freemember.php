@@ -23,12 +23,14 @@
  * THE SOFTWARE.
  */
 
+include(PATH_THIRD.'freemember/config.php');
+
 $plugin_info = array(
-	'pi_name'			=> 'FreeMember',
-	'pi_version'		=> '1.0',
+	'pi_name'			=> FREEMEMBER_NAME,
+	'pi_version'		=> FREEMEMBER_VERSION,
 	'pi_author'			=> 'Exp:resso',
-	'pi_author_url'		=> 'http://exp-resso.com/freemember',
-	'pi_description'	=> 'Free your member templates!',
+	'pi_author_url'		=> FREEMEMBER_DOCS,
+	'pi_description'	=> FREEMEMBER_DESCRIPTION,
 );
 
 class Freemember
