@@ -107,30 +107,7 @@ class Freemember
 			}
 			else
 			{
-				if ( ! is_array($errors))
-				{
-					// fatal error, display error message
-					return $this->EE->output->show_user_error(FALSE, array($errors));
-				}
-				elseif ($this->EE->TMPL->fetch_param('error_handling') == 'inline')
-				{
-					// template inline errors
-					$delim = explode('|', $this->EE->TMPL->fetch_param('error_delimiters'));
-					if (count($delim) != 2)
-					{
-						$delim = array('', '');
-					}
-
-					foreach ($errors as $field_name => $message)
-					{
-						$tag_vars[0]['error:'.$field_name] = $delim[0].$message.$delim[1];
-					}
-				}
-				else
-				{
-					// display errors
-					return $this->EE->output->show_user_error(FALSE, $errors);
-				}
+				$tag_vars = $this->_display_errors($tag_vars, $errors);
 			}
 		}
 
@@ -199,25 +176,7 @@ class Freemember
 			}
 			else
 			{
-				if ($this->EE->TMPL->fetch_param('error_handling') == 'inline')
-				{
-					// template inline errors
-					$delim = explode('|', $this->EE->TMPL->fetch_param('error_delimiters'));
-					if (count($delim) != 2)
-					{
-						$delim = array('', '');
-					}
-
-					foreach ($errors as $field_name => $message)
-					{
-						$tag_vars[0]['error:'.$field_name] = $delim[0].$message.$delim[1];
-					}
-				}
-				else
-				{
-					// display errors
-					return $this->EE->output->show_user_error(FALSE, $errors);
-				}
+				$tag_vars = $this->_display_errors($tag_vars, $errors);
 			}
 		}
 
@@ -230,6 +189,54 @@ class Freemember
 			'action' => $this->EE->functions->create_url($this->EE->uri->uri_string),
 			'hidden_fields' => array(
 				'login_form' => $form_id,
+				'return_url' => $this->EE->TMPL->fetch_param('return'),
+			),
+		));
+
+		// parse tagdata variables
+		$out .= $this->EE->TMPL->parse_variables($this->EE->TMPL->tagdata, $tag_vars);
+
+		// end form output and return
+		return $out.'</form>';
+	}
+
+	/**
+	 * Forgot Password tag
+	 *
+	 * Allow the user to request a new password for their account
+	 */
+	public function forgot_password()
+	{
+		$tag_vars = array(array(
+			'email' => FALSE,
+			'error:email' => FALSE,
+		));
+
+		if ($this->EE->input->post('forgot_password'))
+		{
+			$tag_vars[0]['email'] = $this->EE->input->post('email', TRUE);
+
+			$errors = $this->_member_forgot_password();
+
+			if (empty($errors))
+			{
+				$return_url = $this->EE->functions->create_url($this->EE->input->post('return_url'));
+				$this->EE->functions->redirect($return_url);
+			}
+			else
+			{
+				$tag_vars = $this->_display_errors($tag_vars, $errors);
+			}
+		}
+
+		// start our form output
+		$out = $this->EE->functions->form_declaration(array(
+			'id' => $this->EE->TMPL->fetch_param('form_id'),
+			'name' => $this->EE->TMPL->fetch_param('form_name'),
+			'class' => $this->EE->TMPL->fetch_param('form_class'),
+			'action' => $this->EE->functions->create_url($this->EE->uri->uri_string),
+			'hidden_fields' => array(
+				'forgot_password' => 1,
 				'return_url' => $this->EE->TMPL->fetch_param('return'),
 			),
 		));
@@ -277,6 +284,35 @@ class Freemember
 			// return to most recent page
 			$this->EE->functions->redirect($this->EE->functions->form_backtrack(1));
 		}
+	}
+
+	private function _display_errors($tag_vars, $errors)
+	{
+		if ( ! is_array($errors))
+		{
+			// fatal error, display error message
+			return $this->EE->output->show_user_error(FALSE, array($errors));
+		}
+
+		if ($this->EE->TMPL->fetch_param('error_handling') != 'inline')
+		{
+			// display standard error form
+			$this->EE->output->show_user_error(FALSE, $errors);
+		}
+
+		// inline errors
+		$delim = explode('|', $this->EE->TMPL->fetch_param('error_delimiters'));
+		if (count($delim) != 2)
+		{
+			$delim = array('', '');
+		}
+
+		foreach ($errors as $field_name => $message)
+		{
+			$tag_vars[0]['error:'.$field_name] = $delim[0].$message.$delim[1];
+		}
+
+		return $tag_vars;
 	}
 
 	/**
@@ -349,18 +385,18 @@ class Freemember
 		$VAL = new EE_Validate(array(
 			'member_id'			=> '',
 			'val_type'			=> 'new', // new or update
-			'fetch_lang' 		=> TRUE,
-			'require_cpw' 		=> FALSE,
-		 	'enable_log'		=> FALSE,
+			'fetch_lang'		=> TRUE,
+			'require_cpw'		=> FALSE,
+			'enable_log'		=> FALSE,
 			'username'			=> $_POST['username'],
 			'cur_username'		=> '',
 			'screen_name'		=> $_POST['screen_name'],
 			'cur_screen_name'	=> '',
 			'password'			=> $_POST['password'],
-		 	'password_confirm'	=> $_POST['password'],
-		 	'cur_password'		=> '',
-		 	'email'				=> $_POST['email'],
-		 	'cur_email'			=> ''
+			'password_confirm'	=> $_POST['password'],
+			'cur_password'		=> '',
+			'email'				=> $_POST['email'],
+			'cur_email'			=> ''
 		 ));
 
 		/* MODIFIED TO TAKE NOTE OF WHICH FIELDS ARE CAUSING ERRORS */
@@ -679,8 +715,8 @@ class Freemember
 						 );
 
 			$template = $this->EE->functions->fetch_email_template('admin_notify_reg');
-			$email_tit = $this->_var_swap($template['title'], $swap);
-			$email_msg = $this->_var_swap($template['data'], $swap);
+			$email_tit = $this->EE->functions->var_swap($template['title'], $swap);
+			$email_msg = $this->EE->functions->var_swap($template['data'], $swap);
 
 			$this->EE->load->helper('string');
 
@@ -732,8 +768,8 @@ class Freemember
 			 );
 
 			$template = $this->EE->functions->fetch_email_template('mbr_activation_instructions');
-			$email_tit = $this->_var_swap($template['title'], $swap);
-			$email_msg = $this->_var_swap($template['data'], $swap);
+			$email_tit = $this->EE->functions->var_swap($template['title'], $swap);
+			$email_msg = $this->EE->functions->var_swap($template['data'], $swap);
 
 			// Send email
 			$this->EE->load->helper('text');
@@ -764,24 +800,6 @@ class Freemember
 
 			$message = lang('mbr_your_are_logged_in');
 		}
-	}
-
-	/**
-	 * Most pointless function ever, found in mod.member.php, should be in a helper somewhere
-	 */
-	private function _var_swap($str, $data)
-	{
-		if ( ! is_array($data))
-		{
-			return FALSE;
-		}
-
-		foreach ($data as $key => $val)
-		{
-			$str = str_replace('{'.$key.'}', $val, $str);
-		}
-
-		return $str;
 	}
 
 	/**
@@ -949,6 +967,82 @@ class Freemember
 		$this->EE->db->where('ip_address', $this->EE->input->ip_address())
 					 ->where('member_id', $data['member_id'])
 					 ->update('online_users', $data);
+	}
+
+	private function _member_forgot_password()
+	{
+		// Error trapping
+		if ( ! $address = $this->EE->input->post('email'))
+		{
+			return array('email' => lang('invalid_email_address'));
+		}
+
+		$this->EE->load->helper('email');
+
+		if ( ! valid_email($address))
+		{
+			return array('email' => lang('invalid_email_address'));
+		}
+
+		$address = strip_tags($address);
+
+		// Fetch user data
+		$query = $this->EE->db->select('member_id, username')
+							  ->where('email', $address)
+							  ->get('members');
+
+		if ($query->num_rows() == 0)
+		{
+			return array('email' => lang('no_email_found'));
+		}
+
+		$member_id = $query->row('member_id');
+		$username  = $query->row('username');
+
+		// Kill old data from the reset_password field
+		$time = time() - (60*60*24);
+
+		$this->EE->db->where('date <', $time)
+					 ->or_where('member_id', $member_id)
+					 ->delete('reset_password');
+
+		// Create a new DB record with the temporary reset code
+		$rand = $this->EE->functions->random('alnum', 8);
+
+		$data = array('member_id' => $member_id, 'resetcode' => $rand, 'date' => time());
+
+		$this->EE->db->query($this->EE->db->insert_string('exp_reset_password', $data));
+
+		// Buid the email message
+		$site_name	= stripslashes($this->EE->config->item('site_name'));
+		$return		= $this->EE->config->item('site_url');
+
+		$swap = array(
+			'name'		=> $username,
+			'reset_url' => $this->EE->functions->fetch_site_index(0, 0).QUERY_MARKER.'ACT='.$this->EE->functions->fetch_action_id('Member', 'reset_password').'&id='.$rand,
+			'site_name' => $site_name,
+			'site_url'	=> $return
+		);
+
+		$template = $this->EE->functions->fetch_email_template('forgot_password_instructions');
+		$email_tit = $this->EE->functions->var_swap($template['title'], $swap);
+		$email_msg = $this->EE->functions->var_swap($template['data'], $swap);
+
+		// Instantiate the email class
+
+		$this->EE->load->library('email');
+		$this->EE->email->wordwrap = true;
+		$this->EE->email->from($this->EE->config->item('webmaster_email'), $this->EE->config->item('webmaster_name'));
+		$this->EE->email->to($address);
+		$this->EE->email->subject($email_tit);
+		$this->EE->email->message($email_msg);
+
+		if ( ! $this->EE->email->send())
+		{
+			return array('email' => lang('error_sending_email'));
+		}
+
+		return FALSE;
 	}
 }
 
