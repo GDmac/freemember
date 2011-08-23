@@ -216,7 +216,20 @@ class Freemember
 		{
 			$tag_vars[0]['email'] = $this->EE->input->post('email', TRUE);
 
-			$errors = $this->_member_forgot_password();
+			// generate reset code and URL
+			$reset_code = $this->EE->functions->random('alnum', 10);
+			if ($reset_url = $this->EE->TMPL->fetch_param('reset'))
+			{
+				$reset_url = $this->EE->functions->create_url($reset_url.'/'.$reset_code);
+			}
+			else
+			{
+				$reset_url = $this->EE->functions->fetch_site_index(0, 0).QUERY_MARKER.
+					'ACT='.$this->EE->functions->fetch_action_id('Member', 'reset_password').'&id='.$reset_code;
+			}
+
+			// valide email address and send reset instructions
+			$errors = $this->_member_forgot_password($reset_code, $reset_url);
 
 			if (empty($errors))
 			{
@@ -237,6 +250,73 @@ class Freemember
 			'action' => $this->EE->functions->create_url($this->EE->uri->uri_string),
 			'hidden_fields' => array(
 				'forgot_password' => 1,
+				'return_url' => $this->EE->TMPL->fetch_param('return'),
+			),
+		));
+
+		// parse tagdata variables
+		$out .= $this->EE->TMPL->parse_variables($this->EE->TMPL->tagdata, $tag_vars);
+
+		// end form output and return
+		return $out.'</form>';
+	}
+
+	public function reset_password()
+	{
+		if (($reset_code = $this->EE->TMPL->fetch_param('code')) === FALSE)
+		{
+			$reset_code = $this->EE->uri->segment($this->EE->uri->total_segments());
+		}
+
+		$member = $this->_member_validate_reset_code($reset_code);
+		if (empty($member))
+		{
+			return $this->EE->TMPL->no_results();
+		}
+
+		$tag_vars = array(array(
+			'email' => $member->email,
+			'username' => $member->username,
+			'screen_name' => $member->screen_name,
+			'password' => FALSE,
+			'password_confirm' => FALSE,
+		));
+
+		foreach ($tag_vars[0] as $field_name => $value)
+		{
+			$tag_vars[0]['error:'.$field_name] = FALSE;
+		}
+
+		if ($this->EE->input->post('reset_password'))
+		{
+			$data = array(
+				'member_id' => $member->member_id,
+				'username' => $member->username,
+				'password' => $this->EE->input->post('password'),
+				'password_confirm' => $this->EE->input->post('password_confirm'),
+			);
+
+			$errors = $this->_member_reset_password($data); // attempt to reset password
+
+			if (empty($errors))
+			{
+				$return_url = $this->EE->functions->create_url($this->EE->input->post('return_url'));
+				$this->EE->functions->redirect($return_url);
+			}
+			else
+			{
+				$tag_vars = $this->_display_errors($tag_vars, $errors);
+			}
+		}
+
+		// start our form output
+		$out = $this->EE->functions->form_declaration(array(
+			'id' => $this->EE->TMPL->fetch_param('form_id'),
+			'name' => $this->EE->TMPL->fetch_param('form_name'),
+			'class' => $this->EE->TMPL->fetch_param('form_class'),
+			'action' => $this->EE->functions->create_url($this->EE->uri->uri_string),
+			'hidden_fields' => array(
+				'reset_password' => 1,
 				'return_url' => $this->EE->TMPL->fetch_param('return'),
 			),
 		));
@@ -969,7 +1049,7 @@ class Freemember
 					 ->update('online_users', $data);
 	}
 
-	private function _member_forgot_password()
+	private function _member_forgot_password($reset_code, $reset_url)
 	{
 		// Error trapping
 		if ( ! $address = $this->EE->input->post('email'))
@@ -1007,9 +1087,7 @@ class Freemember
 					 ->delete('reset_password');
 
 		// Create a new DB record with the temporary reset code
-		$rand = $this->EE->functions->random('alnum', 8);
-
-		$data = array('member_id' => $member_id, 'resetcode' => $rand, 'date' => time());
+		$data = array('member_id' => $member_id, 'resetcode' => $reset_code, 'date' => time());
 
 		$this->EE->db->query($this->EE->db->insert_string('exp_reset_password', $data));
 
@@ -1019,7 +1097,7 @@ class Freemember
 
 		$swap = array(
 			'name'		=> $username,
-			'reset_url' => $this->EE->functions->fetch_site_index(0, 0).QUERY_MARKER.'ACT='.$this->EE->functions->fetch_action_id('Member', 'reset_password').'&id='.$rand,
+			'reset_url' => $reset_url,
 			'site_name' => $site_name,
 			'site_url'	=> $return
 		);
@@ -1041,6 +1119,62 @@ class Freemember
 		{
 			return array('email' => lang('error_sending_email'));
 		}
+
+		return FALSE;
+	}
+
+	/**
+	 * Validate Reset Code
+	 *
+	 * Find a member based on a reset code
+	 */
+	private function _member_validate_reset_code($reset_code)
+	{
+		$member = $this->EE->db->from('reset_password r')
+			->join('members m', 'm.member_id = r.member_id')
+			->where('resetcode', $reset_code)
+			->where('date >', time() - (60*60*24))
+			->get()->row();
+
+		if (empty($member)) return FALSE;
+		else return $member;
+	}
+
+	private function _member_reset_password($data)
+	{
+		// Instantiate validation class
+		if ( ! class_exists('EE_Validate'))
+		{
+			require APPPATH.'libraries/Validate.php';
+		}
+
+		$VAL = new EE_Validate($data);
+		$errors = array();
+
+		$VAL->password_confirm = $data['password']; // we do our own check
+		$VAL->validate_password();
+		if ( ! empty($VAL->errors))
+		{
+			$errors['password'] = reset($VAL->errors);
+			$VAL->errors = array();
+		}
+
+		if ($data['password'] && $data['password'] != $data['password_confirm'])
+		{
+			$errors['password_confirm'] = lang('missmatched_passwords');
+		}
+
+		if ( ! empty($errors)) return $errors;
+
+		// update member password
+		$this->EE->db->set('password', $this->EE->functions->hash($data['password']))
+			->where('member_id', $data['member_id'])
+			->update('members');
+
+		// expire reset code
+		$this->EE->db->where('date <', time() - (60*60*24))
+			->or_where('member_id', $data['member_id'])
+			->delete('reset_password');
 
 		return FALSE;
 	}
