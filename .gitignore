@@ -1,1 +1,4 @@
 .DS_Store
+/freemember-*
+/user_guide
+/user_guide_src/_build
