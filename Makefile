@@ -13,5 +13,5 @@ dist: clean docs
 	  php -l $$i; \
 	  if [ $$? -ne 0 ] ; then exit 1 ; fi \
 	done
-	zip -r freemember-$(BUILD_VER).zip README.md system user_guide -x "*/.*"
+	zip -r freemember-$(BUILD_VER).zip README.md LICENSE.txt system user_guide -x "*/.*"
 	unzip freemember-$(BUILD_VER).zip -d freemember-$(BUILD_VER)

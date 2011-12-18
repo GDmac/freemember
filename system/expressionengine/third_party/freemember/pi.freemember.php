@@ -1,8 +1,8 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
- * FreeMember module for ExpressionEngine
- * Copyright (c) 2011 Crescendo Multimedia
+ * FreeMember add-on for ExpressionEngine
+ * Copyright (c) 2011 Crescendo Multimedia Ltd
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
