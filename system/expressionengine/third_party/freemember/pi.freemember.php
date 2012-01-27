@@ -355,7 +355,7 @@ class Freemember
 		/*
 		/* -------------------------------------------*/
 
-		if (($return = $this->EE->TMPL->fetch_param('return')) !== FALSE)
+		if (($return = $this->EE->TMPL->fetch_param('return')) != FALSE)
 		{
 			$this->EE->functions->redirect($this->EE->functions->create_url($return));
 		}
