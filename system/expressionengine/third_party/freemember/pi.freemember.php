@@ -41,7 +41,7 @@ class Freemember
 	{
 		$this->EE =& get_instance();
 
-		$this->EE->load->helper('string');
+		$this->EE->load->helper(array('string', 'security'));
 
 		$this->EE->lang->loadfile('freemember');
 		$this->EE->lang->loadfile('login');
@@ -217,7 +217,7 @@ class Freemember
 			$tag_vars[0]['email'] = $this->EE->input->post('email', TRUE);
 
 			// generate reset code and URL
-			$reset_code = $this->EE->functions->random('alnum', 10);
+			$reset_code = random_string('alnum', 10);
 			if ($reset_url = $this->EE->TMPL->fetch_param('reset'))
 			{
 				$reset_url = $this->EE->functions->create_url($reset_url.'/'.$reset_code);
@@ -610,9 +610,9 @@ class Freemember
 		// Assign the base query data
 		$data = array(
 			'username'		=> $this->EE->input->post('username'),
-			'password'		=> $this->EE->functions->hash($_POST['password']),
+			'password'		=> do_hash($this->EE->input->post('password')),
 			'ip_address'	=> $this->EE->input->ip_address(),
-			'unique_id'		=> $this->EE->functions->random('encrypt'),
+			'unique_id'		=> random_string('encrypt'),
 			'join_date'		=> $this->EE->localize->now,
 			'email'			=> $this->EE->input->post('email'),
 			'screen_name'	=> $this->EE->input->post('screen_name'),
@@ -680,7 +680,7 @@ class Freemember
 		// We generate an authorization code if the member needs to self-activate
 		if ($this->EE->config->item('req_mbr_activation') == 'email')
 		{
-			$data['authcode'] = $this->EE->functions->random('alnum', 10);
+			$data['authcode'] = random_string('alnum', 10);
 		}
 
 		// Insert basic member data
@@ -726,7 +726,7 @@ class Freemember
 			{
 				$mailinglist_subscribe = TRUE;
 
-				$code = $this->EE->functions->random('alnum', 10);
+				$code = random_string('alnum', 10);
 
 				if ($this->EE->config->item('req_mbr_activation') == 'email')
 				{
@@ -1167,7 +1167,7 @@ class Freemember
 		if ( ! empty($errors)) return $errors;
 
 		// update member password
-		$this->EE->db->set('password', $this->EE->functions->hash($data['password']))
+		$this->EE->db->set('password', do_hash($data['password']))
 			->where('member_id', $data['member_id'])
 			->update('members');
 
