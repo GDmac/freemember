@@ -15,9 +15,9 @@ and the Reset Password tag to allow users to choose a new password straight away
 .. contents::
   :local:
 
-**************************
-Forgot Password Parameters
-**************************
+******************************
+Forgot Password Tag Parameters
+******************************
 
 reset="reset_path"
 ==================
@@ -38,9 +38,9 @@ error_delimiters='<span class="error">|</span>'
 ===============================================
 Specify delimiters which will be wrapped around any inline error messages.
 
-*************************
-Forgot Password Variables
-*************************
+*****************************
+Forgot Password Tag Variables
+*****************************
 
 {email}
 =======
@@ -50,20 +50,20 @@ Displays the current email address if the form is invalid. Use it in your input 
 
 You can also display inline errors for this field using the `{error:email}` variable.
 
-***********************
-Forgot Password Example
-***********************
+***************************
+Forgot Password Tag Example
+***************************
 ::
 
-    {exp:freemember:forgot_password return="account/forgot_sent" error_handling="inline" error_delimiters='<span class="error">|</span>'}
+  {exp:freemember:forgot_password return="account/forgot_sent" error_handling="inline" error_delimiters='<span class="error">|</span>'}
 
-        <p>
-            <label for="email">Email</label><br />
-            <input type="email" name="email" value="{email}" /><br />
-            {error:email}
-        <p>
-        <p>
-            <input type="submit" value="Submit" />
-        </p>
+    <p>
+      <label for="email">Email</label><br />
+      <input type="email" name="email" value="{email}" /><br />
+      {error:email}
+    <p>
+    <p>
+      <input type="submit" value="Submit" />
+    </p>
 
-    {/exp:freemember:forgot_password}
+  {/exp:freemember:forgot_password}

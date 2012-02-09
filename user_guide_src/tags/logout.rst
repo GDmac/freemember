@@ -12,18 +12,18 @@ set a return parameter to redirect the user after logout.
 .. contents::
   :local:
 
-*****************
-Logout Parameters
-*****************
+*********************
+Logout Tag Parameters
+*********************
 
 return=""
 =========
 Specify a path to redirect the user to after logging them out. By default the logout tag will
 return to the previous page.
 
-**************
-Logout Example
-**************
+******************
+Logout Tag Example
+******************
 ::
 
     {exp:freemember:logout return="/"}

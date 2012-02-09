@@ -18,9 +18,9 @@ directly, after they click the link in their email.
 .. contents::
   :local:
 
-*************************
-Reset Password Parameters
-*************************
+*****************************
+Reset Password Tag Parameters
+*****************************
 
 code="{segment_3}"
 ==================
@@ -40,9 +40,9 @@ error_delimiters='<span class="error">|</span>'
 ===============================================
 Specify two pipe-separated delimiters which will be wrapped around any inline error messages.
 
-************************
-Reset Password Variables
-************************
+****************************
+Reset Password Tag Variables
+****************************
 
 Inputs
 ======
@@ -61,33 +61,33 @@ The following member variables are available:
 * {username}
 * {screen_name}
 
-**********************
-Reset Password Example
-**********************
+**************************
+Reset Password Tag Example
+**************************
 ::
 
-    {exp:freemember:reset_password return="account/reset_complete" error_handling="inline" error_delimiters='<span class="error">|</span>'}
+  {exp:freemember:reset_password return="account/reset_complete" error_handling="inline" error_delimiters='<span class="error">|</span>'}
 
-        {if no_results}
-            <p>Sorry, the link you clicked does not appear to be valid, or has expired.</p>
-        {/if}
+    {if no_results}
+      <p>Sorry, the link you clicked does not appear to be valid, or has expired.</p>
+    {/if}
 
-        <p>To reset your password, please enter a new password below:</p>
+    <p>To reset your password, please enter a new password below:</p>
 
-        <p>
-            <label for="password">New Password</label><br />
-            <input type="password" name="password" value="" /><br />
-            {error:password}
-        </p>
+    <p>
+      <label for="password">New Password</label><br />
+      <input type="password" name="password" value="" /><br />
+      {error:password}
+    </p>
 
-        <p>
-            <label for="password_confirm">Confirm New Password</label><br />
-            <input type="password" name="password_confirm" value="" /><br />
-            {error:password_confirm}
-        </p>
+    <p>
+      <label for="password_confirm">Confirm New Password</label><br />
+      <input type="password" name="password_confirm" value="" /><br />
+      {error:password_confirm}
+    </p>
 
-        <p>
-            <input type="submit" value="Submit" class="button" />
-        </p>
+    <p>
+      <input type="submit" value="Submit" class="button" />
+    </p>
 
-    {/exp:freemember:reset_password}
+  {/exp:freemember:reset_password}
