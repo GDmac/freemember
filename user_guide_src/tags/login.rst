@@ -19,6 +19,14 @@ form_id=""
 ==========
 Required - this needs to be set to something unique
 
+form_name=""
+============
+Sets the name attribute on the generated form
+
+form_class=""
+============
+Sets the class attribute on the generated form
+
 return=""
 =========
 The path to redirect the user to after login

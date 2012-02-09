@@ -32,6 +32,18 @@ return="return_path"
 The path the user will be redirected to after their password is reset. On this page you should
 mention that their password has been updated, and they can now log in.
 
+form_id=""
+============
+Sets the id attribute on the generated form
+
+form_name=""
+============
+Sets the name attribute on the generated form
+
+form_class=""
+============
+Sets the class attribute on the generated form
+
 error_handling="inline"
 =======================
 Enables inline error-handling.

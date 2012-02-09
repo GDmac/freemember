@@ -30,6 +30,18 @@ return="return_path"
 The path the user will be redirected to after they enter a valid email address. On this page
 you should direct them to check their email for a reset link.
 
+form_id=""
+============
+Sets the id attribute on the generated form
+
+form_name=""
+============
+Sets the name attribute on the generated form
+
+form_class=""
+============
+Sets the class attribute on the generated form
+
 error_handling="inline"
 =======================
 Enables inline error-handling.
