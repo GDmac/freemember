@@ -39,7 +39,7 @@ form_name=""
 Sets the name attribute on the generated form
 
 form_class=""
-============
+=============
 Sets the class attribute on the generated form
 
 error_handling="inline"
