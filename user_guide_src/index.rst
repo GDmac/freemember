@@ -9,4 +9,3 @@ FreeMember User Guide
 
   *
   tags/index
-  tutorials/index

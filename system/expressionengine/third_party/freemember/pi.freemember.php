@@ -123,13 +123,8 @@ class Freemember
 		}
 
 		// start our form output
-		$out = $this->EE->functions->form_declaration(array(
-			'id' => $form_id,
-			'action' => $this->EE->functions->create_url($this->EE->uri->uri_string),
-			'hidden_fields' => array(
-				'register_form' => $form_id,
-				'return_url' => $this->EE->TMPL->fetch_param('return'),
-			),
+		$out = $this->_form_open(array(
+			'hidden_fields' => array('register_form' => $form_id),
 		));
 
 		// parse tagdata variables
@@ -184,13 +179,8 @@ class Freemember
 		$tag_vars[0]['auto_login_checked'] = $tag_vars[0]['auto_login'] ? ' checked="checked" ' : FALSE;
 
 		// start our form output
-		$out = $this->EE->functions->form_declaration(array(
-			'id' => $form_id,
-			'action' => $this->EE->functions->create_url($this->EE->uri->uri_string),
-			'hidden_fields' => array(
-				'login_form' => $form_id,
-				'return_url' => $this->EE->TMPL->fetch_param('return'),
-			),
+		$out = $this->_form_open(array(
+			'hidden_fields' => array('login_form' => $form_id),
 		));
 
 		// parse tagdata variables
@@ -243,15 +233,8 @@ class Freemember
 		}
 
 		// start our form output
-		$out = $this->EE->functions->form_declaration(array(
-			'id' => $this->EE->TMPL->fetch_param('form_id'),
-			'name' => $this->EE->TMPL->fetch_param('form_name'),
-			'class' => $this->EE->TMPL->fetch_param('form_class'),
-			'action' => $this->EE->functions->create_url($this->EE->uri->uri_string),
-			'hidden_fields' => array(
-				'forgot_password' => 1,
-				'return_url' => $this->EE->TMPL->fetch_param('return'),
-			),
+		$out = $this->_form_open(array(
+			'hidden_fields' => array('forgot_password' => 1),
 		));
 
 		// parse tagdata variables
@@ -310,15 +293,8 @@ class Freemember
 		}
 
 		// start our form output
-		$out = $this->EE->functions->form_declaration(array(
-			'id' => $this->EE->TMPL->fetch_param('form_id'),
-			'name' => $this->EE->TMPL->fetch_param('form_name'),
-			'class' => $this->EE->TMPL->fetch_param('form_class'),
-			'action' => $this->EE->functions->create_url($this->EE->uri->uri_string),
-			'hidden_fields' => array(
-				'reset_password' => 1,
-				'return_url' => $this->EE->TMPL->fetch_param('return'),
-			),
+		$out = $this->_form_open(array(
+			'hidden_fields' => array('reset_password' => 1),
 		));
 
 		// parse tagdata variables
@@ -364,6 +340,26 @@ class Freemember
 			// return to most recent page
 			$this->EE->functions->redirect($this->EE->functions->form_backtrack(1));
 		}
+	}
+
+	/**
+	 * All our forms have common attributes
+	 */
+	protected function _form_open($data)
+	{
+		$data['action'] = $this->EE->functions->create_url($this->EE->uri->uri_string);
+		$data['id'] = $this->EE->TMPL->fetch_param('form_id');
+		$data['name'] = $this->EE->TMPL->fetch_param('form_name');
+		$data['class'] = $this->EE->TMPL->fetch_param('form_class');
+
+		if (empty($data['hidden_fields']))
+		{
+			$data['hidden_fields'] = array();
+		}
+
+		$data['hidden_fields']['return_url'] = $this->EE->TMPL->fetch_param('return');
+
+		return $this->EE->functions->form_declaration($data);
 	}
 
 	private function _display_errors($tag_vars, $errors)

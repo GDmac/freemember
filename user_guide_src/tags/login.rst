@@ -11,13 +11,21 @@ which bypasses the default EE login notification screen.
 .. contents::
   :local:
 
-****************
-Login Parameters
-****************
+********************
+Login Tag Parameters
+********************
 
 form_id=""
 ==========
 Required - this needs to be set to something unique
+
+form_name=""
+============
+Sets the name attribute on the generated form
+
+form_class=""
+=============
+Sets the class attribute on the generated form
 
 return=""
 =========
@@ -34,9 +42,9 @@ For example::
 
     error_delimiters="<span class="error">|</span>"
 
-***************
-Login Variables
-***************
+*******************
+Login Tag Variables
+*******************
 
 For the login form to work, you need a field with `name="password"`. You then also need a field
 with `name="email"` or one with `name="password"`.
@@ -63,38 +71,32 @@ As above, this keeps the auto login checkbox checked if your form validation fai
 As per the example, this will display errors for the specified fieldname, such as
 `{error:password}` or `{error:email}`
 
-*************
-Login Example
-*************
+*****************
+Login Tag Example
+*****************
 ::
 
-    {exp:freemember:login form_id="login" return="account" error_handling="inline" error_delimiters='<span class="error">|</span>'}
+  {exp:freemember:login form_id="login" return="account" error_handling="inline" error_delimiters='<span class="error">|</span>'}
 
-        <table class="pad">
-            <tr>
-                <td style="width: 30%"><label for="email">Email</label></td>
-                <td>
-                    <input type="email" name="email" value="{email}" />
-                    {error:email}
-                </td>
-            </tr>
-            <tr>
-                <td><label for="password">Password</label></td>
-                <td>
-                    <input type="password" name="password" value="" />
-                    {error:password}
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <label><input type="checkbox" name="auto_login" value="y" {auto_login_checked} /> Remember Me</label>
-                </td>
-            </tr>
-        </table>
-        <p class="right">
-            <a href="{path='account/register'}">Create Account</a>&nbsp;&nbsp;
-            <input type="submit" value="Log in" class="button" />
-        </p>
+    <p>
+      <label for="email">Email</label><br />
+      <input type="email" name="email" value="{email}" /><br />
+      {error:email}
+    </p>
 
-    {/exp:freemember:login}
+    <p>
+      <label for="password">Password</label><br />
+      <input type="password" name="password" value="" /><br />
+      {error:password}
+    </p>
+
+    <p>
+      <input type="checkbox" name="auto_login" value="y" {auto_login_checked} />
+      <label for="auto_login">Remember Me</label>
+    </p>
+
+    <p><input type="submit" value="Log in" /></p>
+
+    <p><a href="{path='account/register'}">Create Account</a></p>
+
+  {/exp:freemember:login}
