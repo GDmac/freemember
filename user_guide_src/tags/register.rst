@@ -51,9 +51,9 @@ Register Tag Variables
 
 For the registration form to work, you just need to submit fields with ``name="password"``,
 ``name="password_confirm"``, and ``name="email"``. You can optionally template fields with
-``name="username"`` and ``name="screenname"``. If username and screen name aren't submitted,
-they will be set to the email address. If the username but not the screenname is submitted,
-the screenname will be set to the username
+``name="username"`` and ``name="screen_name"``. If username and screen name aren't submitted,
+they will be set to the email address. If the username but not the screen_name is submitted,
+the screen_name will be set to the username
 
 You also need to set a field with ``name="accept_terms"`` to any value - this can either be
 done with a hidden field as in our example, or as a checkbox that the user has to tick.
