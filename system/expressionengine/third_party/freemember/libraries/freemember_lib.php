@@ -112,7 +112,7 @@ class Freemember_lib
 
 		if ($auth_field == 'email')
 		{
-			$member = $this->EE->db->get_where('members', array('email' => $_POST['email']))->row_array();
+			$member = $this->EE->freemember_model->find_member_by_email($_POST['email']);
 			if (empty($member))
 			{
 				return array('email' => lang('invalid_email'));
@@ -122,7 +122,7 @@ class Freemember_lib
 		}
 		else
 		{
-			$member = $this->EE->db->get_where('members', array('username' => $_POST['username']))->row_array();
+			$member = $this->EE->freemember_model->find_member_by_username($_POST['username']);
 			if (empty($member))
 			{
 				return array('username' => lang('invalid_username'));
@@ -159,6 +159,12 @@ class Freemember_lib
 
 		$sess->start_session();
 		$this->EE->freemember_model->update_online_user_stats();
+
+		// support group_id_X_return params, rewrite return_url based on member group
+		if ($return_url = $this->form_param("group_id_{$member->group_id}_return"))
+		{
+			$_POST['return_url'] = $return_url;
+		}
 	}
 
 	/**

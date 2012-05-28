@@ -126,6 +126,16 @@ class Freemember_model extends CI_Model
 			->get()->row();
 	}
 
+	public function find_member_by_username($username)
+	{
+		return $this->EE->db->where('username', $username)->get('members')->row();
+	}
+
+	public function find_member_by_email($email)
+	{
+		return $this->EE->db->where('email', $email)->get('members')->row();
+	}
+
 	/**
 	 * Clean password reset codes before issuing a new one, or after it has been used
 	 */
