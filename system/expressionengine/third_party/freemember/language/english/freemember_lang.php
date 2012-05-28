@@ -1,8 +1,13 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 $lang = array(
+	'freemember_module_name' => 'Freemember',
+	'freemember_module_description' => 'Free your member templates!',
+
+	'current_password' => 'Current Password',
 	'invalid_email' => 'Invalid email address',
 	'invalid_username' => 'Invalid username',
+	'fm_invalid_selection' => 'The %s field contains an invalid selection.',
 );
 
-/* End of file freemember_lang.php */
+/* End of file */
