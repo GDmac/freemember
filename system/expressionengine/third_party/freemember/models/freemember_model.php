@@ -33,6 +33,88 @@ class Freemember_model extends CI_Model
 		$this->EE =& get_instance();
 	}
 
+	public function find_members($params)
+	{
+		$defaults = array(
+			'member_id' => false,
+			'username' => false,
+			'limit' => 50,
+			'offset' => 0,
+			'orderby' => 'member_id',
+			'sort' => false,
+			'count_all_results' => false,
+		);
+		$params = array_merge($defaults, (array)$params);
+
+		$member_fields = $this->member_fields();
+		$custom_fields = $this->member_custom_fields();
+
+		// clean params
+		$params['sort'] = strtoupper($params['sort']) == 'DESC' ? 'DESC' : 'ASC';
+		if ('CURRENT_USER' == $params['member_id'])
+		{
+			$params['member_id'] = $this->EE->session->userdata('member_id');
+		}
+
+		if ('member_id' == $params['orderby'])
+		{
+			$params['orderby'] = 'm.member_id';
+		}
+		elseif ( ! in_array($params['orderby'], $member_fields))
+		{
+			// orderby must be a custom member field
+			$custom_order = $params['orderby'];
+			$params['orderby'] = 'm.member_id';
+
+			foreach ($custom_fields as $field)
+			{
+				if ($custom_order == $field->m_field_name)
+				{
+					$params['orderby'] = 'm_field_id_'.$field->m_field_id;
+					break;
+				}
+			}
+		}
+
+		// member_id and username must not be an empty string (e.g. missing segment variable)
+		if ('' === $params['member_id']) return false;
+		if ('' === $params['username']) return false;
+
+		// build where clause
+		$sql_where = '1=1 ';
+		if (false !== $params['member_id'])
+		{
+			$sql_where .= $this->functions->sql_andor_string((string)$params['member_id'], 'm.member_id');
+		}
+		if (false !== $params['username'])
+		{
+			$sql_where .= $this->functions->sql_andor_string((string)$params['username'], 'm.username');
+		}
+
+		$sql_select = $member_fields;
+		array_unshift($sql_select, 'm.member_id');
+		$custom_fields = $this->member_custom_fields();
+		foreach ($custom_fields as $field)
+		{
+			$sql_select[] = "m_field_id_{$field->m_field_id} AS {$field->m_field_name}";
+		}
+
+		// run query
+		$this->EE->db->select(implode(', ', $sql_select))
+			->from('members m')
+			->join('member_data md', 'md.member_id = m.member_id', 'left')
+			->where($sql_where, null, false)
+			->order_by($params['orderby'], $params['sort']);
+
+		if ($params['count_all_results'])
+		{
+			return $this->EE->db->count_all_results();
+		}
+
+		$this->EE->db->limit((int)$params['limit'], (int)$params['offset']);
+		return $this->EE->db->get()->result_array();
+	}
+
 	public function find_member_by_reset_code($reset_code)
 	{
 		if (empty($reset_code)) return false;

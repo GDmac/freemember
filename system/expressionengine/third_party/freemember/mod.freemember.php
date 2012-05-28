@@ -77,7 +77,7 @@ class Freemember
 
 		// form fields
 		$this->tag_vars = array();
-		$this->_add_member_fields($member);
+		$this->_add_member_fields();
 
 		// generate captcha
 		if ($this->EE->config->item('use_membership_captcha') == 'y')
@@ -133,7 +133,14 @@ class Freemember
 	 */
 	public function members()
 	{
+		$search = $this->EE->TMPL->tagparams;
+		$members = $this->EE->freemember_model->find_members($search);
+		if ($members)
+		{
+			return $this->EE->TMPL->parse_variables($this->EE->TMPL->tagdata, $members);
+		}
 
+		return $this->EE->TMPL->no_results();
 	}
 
 	/**
