@@ -19,35 +19,35 @@ and the Reset Password tag to allow users to choose a new password straight away
 Forgot Password Tag Parameters
 ******************************
 
-reset="reset_path"
-==================
+form_id
+=======
+Set the id attribute on the generated form.
+
+form_name
+=========
+Set the name attribute on the generated form.
+
+form_class
+==========
+Set the class attribute on the generated form.
+
+reset
+=====
 Specify the path to your reset password template. This template will allow the user to choose
 a new password after they click the link in their email, instead of sending them a
 randomly-generated one.
 
-return="return_path"
-====================
+return
+======
 The path the user will be redirected to after they enter a valid email address. On this page
 you should direct them to check their email for a reset link.
 
-form_id=""
-============
-Sets the id attribute on the generated form
-
-form_name=""
-============
-Sets the name attribute on the generated form
-
-form_class=""
-=============
-Sets the class attribute on the generated form
-
-error_handling="inline"
-=======================
+error_handling
+==============
 Enables inline error-handling.
 
-error_delimiters='<span class="error">|</span>'
-===============================================
+error_delimiters
+================
 Specify delimiters which will be wrapped around any inline error messages.
 
 *****************************

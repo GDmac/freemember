@@ -18,28 +18,28 @@ process behaves the way you wish.
 Register Tag Parameters
 ***********************
 
-form_id=""
-==========
-Required - this needs to be set to something unique
+form_id
+=======
+Set the id attribute on the generated form.
 
-form_name=""
-============
-Sets the name attribute on the generated form
-
-form_class=""
-=============
-Sets the class attribute on the generated form
-
-return=""
+form_name
 =========
+Set the name attribute on the generated form.
+
+form_class
+==========
+Set the class attribute on the generated form.
+
+return
+======
 The path to redirect the user to after registration
 
-error_handling="inline"
-=======================
+error_handling
+==============
 Turns on inline error handling
 
-error_delimiters=""
-===================
+error_delimiters
+================
 Specify the code you want to wrap the error messages in, if you are using inline error handling.
 For example::
 
