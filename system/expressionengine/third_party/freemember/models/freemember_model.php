@@ -37,6 +37,7 @@ class Freemember_model extends CI_Model
 	{
 		$defaults = array(
 			'member_id' => false,
+			'group_id' => false,
 			'username' => false,
 			'limit' => 50,
 			'offset' => 0,
@@ -56,6 +57,7 @@ class Freemember_model extends CI_Model
 			$params['member_id'] = $this->EE->session->userdata('member_id');
 		}
 
+		// validate orderby clause
 		if ('member_id' == $params['orderby'])
 		{
 			$params['orderby'] = 'm.member_id';
@@ -76,9 +78,20 @@ class Freemember_model extends CI_Model
 			}
 		}
 
-		// member_id and username must not be an empty string (e.g. missing segment variable)
+		// these fields must not be an empty string (e.g. missing segment variable)
 		if ('' === $params['member_id']) return false;
+		if ('' === $params['group_id']) return false;
 		if ('' === $params['username']) return false;
+
+		// build select clause
+		$sql_select = $member_fields;
+		array_unshift($sql_select, 'm.member_id');
+		array_unshift($sql_select, 'm.group_id');
+		$custom_fields = $this->member_custom_fields();
+		foreach ($custom_fields as $field)
+		{
+			$sql_select[] = "m_field_id_{$field->m_field_id} AS {$field->m_field_name}";
+		}
 
 		// build where clause
 		$sql_where = '1=1 ';
@@ -86,17 +99,13 @@ class Freemember_model extends CI_Model
 		{
 			$sql_where .= $this->functions->sql_andor_string((string)$params['member_id'], 'm.member_id');
 		}
+		if (false !== $params['group_id'])
+		{
+			$sql_where .= $this->functions->sql_andor_string((string)$params['group_id'], 'm.group_id');
+		}
 		if (false !== $params['username'])
 		{
 			$sql_where .= $this->functions->sql_andor_string((string)$params['username'], 'm.username');
-		}
-
-		$sql_select = $member_fields;
-		array_unshift($sql_select, 'm.member_id');
-		$custom_fields = $this->member_custom_fields();
-		foreach ($custom_fields as $field)
-		{
-			$sql_select[] = "m_field_id_{$field->m_field_id} AS {$field->m_field_name}";
 		}
 
 		// run query
