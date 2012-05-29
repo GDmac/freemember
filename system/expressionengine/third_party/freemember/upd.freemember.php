@@ -42,7 +42,7 @@ class Freemember_upd
 		$this->EE->db->insert('modules', array(
 			'module_name' => FREEMEMBER_CLASS,
 			'module_version' => $this->version,
-			'has_cp_backend' => 'y',
+			'has_cp_backend' => 'n',
 			'has_publish_fields' => 'n'));
 
 		$this->_register_action('act_login');
