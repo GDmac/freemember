@@ -296,7 +296,7 @@ class Freemember_lib
 	public function reset_password()
 	{
 		// verify reset code
-		$member = $this->EE->freemember_model->find_member_by_reset_code($this->EE->input->post('code'));
+		$member = $this->EE->freemember_model->find_member_by_reset_code($this->EE->input->post('reset_code'));
 		if (empty($member))
 		{
 			return $this->EE->output->show_user_error('submission', array(lang('mbr_id_not_found')));

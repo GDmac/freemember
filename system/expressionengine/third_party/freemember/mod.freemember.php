@@ -169,10 +169,14 @@ class Freemember
 	public function reset_password()
 	{
 		// was reset code specified in params?
-		if (($reset_code = $this->EE->TMPL->fetch_param('code')) === false)
+		if (($reset_code = $this->EE->TMPL->fetch_param('reset_code')) === false)
 		{
-			// reset code defaults to last segment
-			$reset_code = $this->EE->uri->segment($this->EE->uri->total_segments());
+			// freemember 1.x compabitility
+			if (($reset_code = $this->EE->TMPL->fetch_param('code')) === false)
+			{
+				// reset code defaults to last segment
+				$reset_code = $this->EE->uri->segment($this->EE->uri->total_segments());
+			}
 		}
 
 		// verify reset code
@@ -194,7 +198,7 @@ class Freemember
 		// inline errors
 		$this->_add_errors(self::$reset_password_errors);
 
-		return $this->_build_form('act_reset_password', array('code' => $reset_code));
+		return $this->_build_form('act_reset_password', array('reset_code' => $reset_code));
 	}
 
 	public function act_reset_password()
