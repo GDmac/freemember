@@ -5,6 +5,12 @@ Release Notes
 .. contents::
   :local:
 
+FreeMember 2.0.0
+================
+*Released May 29, 2012*
+
+* Complete rewrite with support for custom member fields, member profile editing, and improved error handling.
+
 FreeMember 1.1.2
 ================
 *Released February 10, 2011*

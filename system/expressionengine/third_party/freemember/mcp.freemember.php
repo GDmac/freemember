@@ -31,11 +31,6 @@ class Freemember_mcp
 	{
 		$this->EE =& get_instance();
 	}
-
-	public function index()
-	{
-		return 'FreeMember successfully installed.';
-	}
 }
 
 /* End of file */
