@@ -424,6 +424,11 @@ class Freemember_lib
 		$this->EE->load->library('fm_form_validation');
 		$this->_add_member_validation_rules();
 
+		// set existing data
+		$this->EE->form_validation->set_old_value('username', $this->EE->session->userdata('username'));
+		$this->EE->form_validation->set_old_value('email', $this->EE->session->userdata('email'));
+		$this->EE->form_validation->set_old_value('screen_name', $this->EE->session->userdata('screen_name'));
+
 		// if new password is submitted, then current_password and password_confirm are required
 		if ( ! empty($_POST['password']))
 		{
@@ -486,6 +491,11 @@ class Freemember_lib
 		$this->EE->form_validation->add_rules('password', 'lang:password', 'valid_password');
 		$this->EE->form_validation->add_rules('password_confirm', 'lang:password', 'matches[password]');
 		$this->EE->form_validation->add_rules('current_password', 'lang:current_password', 'fm_current_password');
+
+		// trigger unique checks
+		$this->EE->form_validation->set_old_value('username', ' ');
+		$this->EE->form_validation->set_old_value('email', ' ');
+		$this->EE->form_validation->set_old_value('screen_name', ' ');
 
 		// custom field rules
 		foreach ($this->EE->freemember_model->member_custom_fields() as $field)
