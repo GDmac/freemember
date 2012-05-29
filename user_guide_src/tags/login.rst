@@ -48,41 +48,76 @@ For example::
 
     {exp:freemember:login error_handling="inline" error_delimiters="<span class="error">|</span>"}
 
-*******************
-Login Tag Variables
-*******************
+*********************
+Login Tag Form Fields
+*********************
 
 The login form must contain at the very least a ``password`` input, and a ``username`` or
 ``email`` input.
 
-You can also enable auto-login by setting a field (either a hidden one or a checkbox)
-with `name="auto_login"` to `value="1"`.
+You can also enable auto-login by adding an ``auto_login`` field.
 
-{email}
-=======
-If your form contains errors and the page is reloaded, set the email input field's value
-to this to remember the previously entered address.
+email
+=====
+If you want members to log in using their email address, use this field in your form::
 
-{username}
+    {field:email}
+
+Errors relating to the email address are available with the error helper::
+
+    {error:email}
+
+Alternatively, you can template the field manually::
+
+    <input type="email" name="email" value="{email}" />
+
+username
+========
+If you want members to log in using their username instead of their email address, use this
+field in your form instead of the ``email`` field::
+
+    {field:username}
+
+Errors relating to the username are available with the error helper::
+
+    {error:username}
+
+Alternatively, you can template the field manually::
+
+    <input type="text" name="username" value="{username}" />
+
+password
+========
+This field must be submitted. Use the field helper to add it to your form::
+
+    {field:password}
+
+Errors relating to the password are available with the error helper::
+
+    {error:password}
+
+Alternatively, you can template the field manually::
+
+    <input type="password" name="password" value="" />
+
+auto_login
 ==========
-If your members log in with a username instead of an email address, this will pre-fill the
-username field if the form validation fails.
+If this field is submitted, the "Remember Me" feature will be enabled. You can use the field
+helper to generate the checkbox::
 
-{auto_login_checked}
-====================
-As above, this keeps the auto login checkbox checked if your form validation fails.
+    {field:auto_login}
 
-{error:fieldname}
-=================
-As per the example, this will display errors for the specified fieldname, such as
-`{error:password}` or `{error:email}`
+Alternatively, you can template the input yourself, and use the ``{auto_login_checked}`` helper
+to keep the checkbox checked between requests::
+
+    <input type="checkbox" name="auto_login" value="1" {auto_login_checked} />
 
 *****************
 Login Tag Example
 *****************
 ::
 
-    {exp:freemember:login form_id="login" return="account" error_handling="inline" error_delimiters='<span class="error">|</span>'}
+    {exp:freemember:login return="account" error_handling="inline" error_delimiters='<span class="error">|</span>'}
 
         <p>
             <label for="email">Email</label><br />

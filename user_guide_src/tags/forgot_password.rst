@@ -50,32 +50,36 @@ error_delimiters
 ================
 Specify delimiters which will be wrapped around any inline error messages.
 
-*****************************
-Forgot Password Tag Variables
-*****************************
+*******************************
+Forgot Password Tag Form Fields
+*******************************
 
-{email}
-=======
-Displays the current email address if the form is invalid. Use it in your input field, like so::
+email
+=====
+Allow the user to enter their email address, to gain access to their account. Use the field helper
+to add it to your form::
 
-    <input type="text" name="email" value="{email}" />
+    {field:email}
 
-You can also display inline errors for this field using the `{error:email}` variable.
+Errors relating to the username are available with the error helper::
+
+    {error:email}
 
 ***************************
 Forgot Password Tag Example
 ***************************
 ::
 
-  {exp:freemember:forgot_password return="account/forgot_sent" error_handling="inline" error_delimiters='<span class="error">|</span>'}
+    {exp:freemember:forgot_password return="account/forgot_sent" error_handling="inline" error_delimiters='<span class="error">|</span>'}
 
-    <p>
-      <label for="email">Email</label><br />
-      <input type="email" name="email" value="{email}" /><br />
-      {error:email}
-    <p>
-    <p>
-      <input type="submit" value="Submit" />
-    </p>
+        <p>
+            <label for="email">Email</label><br />
+            {field:email}<br />
+            {error:email}
+        <p>
 
-  {/exp:freemember:forgot_password}
+        <p>
+            <input type="submit" value="Submit" />
+        </p>
+
+    {/exp:freemember:forgot_password}
