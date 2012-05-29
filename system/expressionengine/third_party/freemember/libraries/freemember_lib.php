@@ -117,8 +117,6 @@ class Freemember_lib
 			{
 				return array('email' => lang('invalid_email'));
 			}
-
-			$sess = $this->EE->auth->authenticate_email($_POST['email'], $_POST['password']);
 		}
 		else
 		{
@@ -127,10 +125,15 @@ class Freemember_lib
 			{
 				return array('username' => lang('invalid_username'));
 			}
-
-			$sess = $this->EE->auth->authenticate_username($_POST['username'], $_POST['password']);
 		}
 
+		// check for pending members
+		if (4 == $member->group_id)
+		{
+			return array($auth_field => lang('mbr_account_not_active'));
+		}
+
+		$sess = $this->EE->auth->authenticate_id($member->member_id, $_POST['password']);
 		if ( ! $sess)
 		{
 			$this->EE->session->save_password_lockout($_POST[$auth_field]);
