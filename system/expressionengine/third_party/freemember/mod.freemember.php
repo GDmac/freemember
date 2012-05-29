@@ -265,7 +265,7 @@ class Freemember
 		if ($type == 'checkbox')
 		{
 			$checked = $value ? ' checked ' : '';
-			$field = "<input type='hidden' name='$name' value='0' />$field value='1' $checked";
+			$field = "<input type='hidden' name='$name' value='' />$field value='1' $checked";
 			$this->tag_vars[0][$name.'_checked'] = $checked;
 		}
 		else
