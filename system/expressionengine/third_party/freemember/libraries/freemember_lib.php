@@ -392,6 +392,7 @@ class Freemember_lib
 		$this->_add_member_validation_rules();
 
 		// rules specific to registration form
+		$this->EE->form_validation->add_rules('password', 'lang:password', 'required');
 		$this->EE->form_validation->add_rules('password_confirm', 'lang:password_confirm', 'required');
 
 		if ($this->EE->config->item('use_membership_captcha') == 'y')
@@ -503,9 +504,10 @@ class Freemember_lib
 		// custom field rules
 		foreach ($this->EE->freemember_model->member_custom_fields() as $field)
 		{
+			$field_rules = '';
 			if ($field->m_field_required == 'y')
 			{
-				$this->EE->form_validation->add_rules($field->m_field_name, $field->m_field_label, 'required');
+				$field_rules .= '|required';
 			}
 
 			// ensure select fields match a valid option
@@ -514,9 +516,12 @@ class Freemember_lib
 				$options = explode("\n", $field->m_field_list_items);
 				if ( ! in_array($this->EE->input->post($field->m_field_name), $options))
 				{
-					$this->EE->form_validation->add_rules($field->m_field_name, $field->m_field_label, 'fm_invalid_selection');
+					$field_rules .= '|fm_invalid_selection';
 				}
 			}
+
+			// do this whether or not we have any rules, so it updates the field label
+			$this->EE->form_validation->add_rules($field->m_field_name, $field->m_field_label, $field_rules);
 		}
 	}
 
