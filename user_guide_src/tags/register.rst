@@ -18,102 +18,137 @@ process behaves the way you wish.
 Register Tag Parameters
 ***********************
 
-form_id=""
-==========
-Required - this needs to be set to something unique
+form_id
+=======
+Set the id attribute on the generated form.
 
-form_name=""
-============
-Sets the name attribute on the generated form
-
-form_class=""
-=============
-Sets the class attribute on the generated form
-
-return=""
+form_name
 =========
+Set the name attribute on the generated form.
+
+form_class
+==========
+Set the class attribute on the generated form.
+
+return
+======
 The path to redirect the user to after registration
 
-error_handling="inline"
-=======================
+error_handling
+==============
 Turns on inline error handling
 
-error_delimiters=""
-===================
+error_delimiters
+================
 Specify the code you want to wrap the error messages in, if you are using inline error handling.
 For example::
 
     error_delimiters="<span class="error">|</span>"
 
-**********************
-Register Tag Variables
-**********************
+************************
+Register Tag Form Fields
+************************
 
-For the registration form to work, you just need to submit fields with ``name="password"``,
-``name="password_confirm"``, and ``name="email"``. You can optionally template fields with
-``name="username"`` and ``name="screenname"``. If username and screen name aren't submitted,
-they will be set to the email address. If the username but not the screenname is submitted,
-the screenname will be set to the username
+For the registration form to work, you you must submit the ``email``, ``password``, and
+``password_confirm`` fields. The rest of the fields are optional. If the ``username`` is not
+submitted, it defaults to the email address. Likewise, if the ``screen_name`` is not submitted,
+it defaults to the ``username``.
 
-You also need to set a field with ``name="accept_terms"`` to any value - this can either be
-done with a hidden field as in our example, or as a checkbox that the user has to tick.
-If the setting in your config is set to require terms of service, then as long as this
-field is submitted it will validate (ie, it can have any value, just has to have
-``name="accept_terms"``. You can template errors using ``{error:accept_terms}``
+In addition, you may submit any of the other member fields (and custom member fields) as
+available in the :doc:`update_profile`.
 
-Custom field processing and 'edit' functionality coming soon!
+email
+=====
+Allow the user to specify their email address. This must be unique across all members in your
+site. Use the field helper to add this to your form::
 
-{captcha}
-=========
-Displays a captcha image. You can also use {if captcha} to conditionally display it
-(if it has been turned on in the EE settings), and a text input with ``name="captcha"``
-to submit the code.
+    {field:email}
 
-{error:fieldname}
-=================
-Displays any errors for a field, such as ``{error:captcha}`` or ``{error:email}``
+Errors relating to the email address are available with the error helper::
+
+    {error:email}
+
+email_confirm
+=============
+If this field is submitted, it must match the {email} field.
+
+username
+========
+Allow the user to choose a username. This must be unique across all members in your site.
+Use the field helper to add this to your form::
+
+    {field:username}
+
+Errors relating to the username are available with the error helper::
+
+    {error:username}
+
+screen_name
+===========
+Allow the user to choose a screen name. This must be unique across all members in your site.
+Use the field helper to add this to your form::
+
+    {field:screen_name}
+
+Errors relating to the screen name are available with the error helper::
+
+    {error:screen_name}
+
+accept_terms
+============
+If you have enabled it in the EE config, this field must be submitted along with your form. You
+can either submit it as a hidden field, or use the field helper to add a checkbox to your form::
+
+    {field:accept_terms} <label for="accept_terms">I accept the terms & conditions</label><br />
+
+Errors relating to the accept terms checkbox are available with the error helper::
+
+    {error:accept_terms}
+
+captcha
+=======
+If you have captchas enabled, you must display the captcha and add a field to your registration
+form. Use the following code as a template::
+
+    {if captcha}
+        Please enter the following characters into the box below:<br />
+        {captcha}<br />
+        {field:captcha}<br />
+        {error:captcha}
+    {/if}
 
 ********************
 Register Tag Example
 ********************
 ::
 
-  {exp:freemember:register form_id="register" return="account" error_handling="inline" error_delimiters='<span class="error">|</span>'}
+    {exp:freemember:register return="account" error_handling="inline" error_delimiters='<span class="error">|</span>'}
 
-    <p>
-      <label for="email">Email</label><br />
-      <input type="email" name="email" value="{email}" /><br />
-      {error:email}
-    </p>
+        <p>
+            <label for="email">Email</label><br />
+            {field:email}<br />
+            {error:email}
+        </p>
 
-    <p>
-      <label for="password">Password</label><br />
-      <input type="password" name="password" value="" /><br />
-      {error:password}
-    </p>
+        <p>
+            <label for="password">Password</label><br />
+            {field:password}<br />
+            {error:password}
+        </p>
 
-    <p>
-      <label for="password_confirm">Confirm Password</label><br />
-      <input type="password" name="password_confirm" value="" /><br />
-      {error:password_confirm}
-    </p>
+        <p>
+            <label for="password_confirm">Confirm Password</label><br />
+            {field:password_confirm}<br />
+            {error:password_confirm}
+        </p>
 
-    {if captcha}
-      <p>
-        <label for="captcha">Captcha</label><br />
-        {captcha}<br />
-        <input type="text" name="captcha" value="" /><br />
-        {error:captcha}
-      </p>
-    {/if}
+        <p>
+            {field:accept_terms} <label for="accept_terms">Accept Terms</label><br />
+            {error:accept_terms}
+        </p>
 
-    <p>
-      <input type="checkbox" name="accept_terms" value="y" />
-      <label for="accept_terms">Accept Terms</label>
-    </p>
+        <p>
+            <input type="submit" value="Submit" />
+        </p>
 
-    <p>
-      <input type="submit" value="Submit" />
-    </p>
-
-  {/exp:freemember:register}
+    {/exp:freemember:register}

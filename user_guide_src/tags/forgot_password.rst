@@ -19,63 +19,67 @@ and the Reset Password tag to allow users to choose a new password straight away
 Forgot Password Tag Parameters
 ******************************
 
-reset="reset_path"
-==================
+form_id
+=======
+Set the id attribute on the generated form.
+
+form_name
+=========
+Set the name attribute on the generated form.
+
+form_class
+==========
+Set the class attribute on the generated form.
+
+reset
+=====
 Specify the path to your reset password template. This template will allow the user to choose
 a new password after they click the link in their email, instead of sending them a
 randomly-generated one.
 
-return="return_path"
-====================
+return
+======
 The path the user will be redirected to after they enter a valid email address. On this page
 you should direct them to check their email for a reset link.
 
-form_id=""
-============
-Sets the id attribute on the generated form
-
-form_name=""
-============
-Sets the name attribute on the generated form
-
-form_class=""
-=============
-Sets the class attribute on the generated form
-
-error_handling="inline"
-=======================
+error_handling
+==============
 Enables inline error-handling.
 
-error_delimiters='<span class="error">|</span>'
-===============================================
+error_delimiters
+================
 Specify delimiters which will be wrapped around any inline error messages.
 
-*****************************
-Forgot Password Tag Variables
-*****************************
+*******************************
+Forgot Password Tag Form Fields
+*******************************
 
-{email}
-=======
-Displays the current email address if the form is invalid. Use it in your input field, like so::
+email
+=====
+Allow the user to enter their email address, to gain access to their account. Use the field helper
+to add it to your form::
 
-    <input type="text" name="email" value="{email}" />
+    {field:email}
 
-You can also display inline errors for this field using the `{error:email}` variable.
+Errors relating to the username are available with the error helper::
+
+    {error:email}
 
 ***************************
 Forgot Password Tag Example
 ***************************
 ::
 
-  {exp:freemember:forgot_password return="account/forgot_sent" error_handling="inline" error_delimiters='<span class="error">|</span>'}
+    {exp:freemember:forgot_password return="account/forgot_sent" error_handling="inline" error_delimiters='<span class="error">|</span>'}
 
-    <p>
-      <label for="email">Email</label><br />
-      <input type="email" name="email" value="{email}" /><br />
-      {error:email}
-    <p>
-    <p>
-      <input type="submit" value="Submit" />
-    </p>
+        <p>
+            <label for="email">Email</label><br />
+            {field:email}<br />
+            {error:email}
+        <p>
 
-  {/exp:freemember:forgot_password}
+        <p>
+            <input type="submit" value="Submit" />
+        </p>
+
+    {/exp:freemember:forgot_password}

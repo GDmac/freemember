@@ -5,9 +5,11 @@ Logout Tag
 
   {exp:freemember:logout}
 
-Sick of that annoying notification page when you log out? Just stick this tag by itself
-on a template, then link to this template, to log the current member out. You can optionally
-set a return parameter to redirect the user after logout.
+.. note::
+    This tag is deprecated. You should use the :doc:`logout_url` instead.
+
+The logout tag should be placed on a separate template. As soon as the page is displayed, the
+current user will be logged out and redirected to their destination.
 
 .. contents::
   :local:
@@ -16,8 +18,8 @@ set a return parameter to redirect the user after logout.
 Logout Tag Parameters
 *********************
 
-return=""
-=========
+return
+======
 Specify a path to redirect the user to after logging them out. By default the logout tag will
 return to the previous page.
 

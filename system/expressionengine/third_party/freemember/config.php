@@ -3,8 +3,8 @@
 if ( ! defined('FREEMEMBER_NAME'))
 {
 	define('FREEMEMBER_NAME', 'FreeMember');
-	define('FREEMEMBER_VERSION', '1.1.2');
-	define('FREEMEMBER_DESCRIPTION', 'Free your member templates!');
+	define('FREEMEMBER_CLASS', 'Freemember');
+	define('FREEMEMBER_VERSION', '2.0.0');
 	define('FREEMEMBER_DOCS', 'http://exp-resso.com/freemember');
 }
 

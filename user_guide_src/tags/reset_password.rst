@@ -22,34 +22,35 @@ directly, after they click the link in their email.
 Reset Password Tag Parameters
 *****************************
 
-code="{segment_3}"
-==================
-Specify which segment contains the reset code. By default, FreeMember will look for a reset
- code in the last segment, so in most cases you will not need this parameter.
+form_id
+=======
+Set the id attribute on the generated form.
 
-return="return_path"
-====================
+form_name
+=========
+Set the name attribute on the generated form.
+
+form_class
+==========
+Set the class attribute on the generated form.
+
+reset_code
+==========
+Specify which segment contains the reset code. By default, FreeMember will look for a reset
+code in the last segment, so in most cases you will not need this parameter. For backwards
+compatibility with FreeMember 1.x, this parameter may also be specified as just ``code``.
+
+return
+======
 The path the user will be redirected to after their password is reset. On this page you should
 mention that their password has been updated, and they can now log in.
 
-form_id=""
-============
-Sets the id attribute on the generated form
-
-form_name=""
-============
-Sets the name attribute on the generated form
-
-form_class=""
-=============
-Sets the class attribute on the generated form
-
-error_handling="inline"
-=======================
+error_handling
+==============
 Enables inline error-handling.
 
-error_delimiters='<span class="error">|</span>'
-===============================================
+error_delimiters
+================
 Specify two pipe-separated delimiters which will be wrapped around any inline error messages.
 
 ****************************
