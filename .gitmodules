@@ -1,3 +1,0 @@
-[submodule "user_guide_src/_themes/cidoc"]
-	path = user_guide_src/_themes/cidoc
-	url = git@github.com:adrianmacneil/cidoc.git
