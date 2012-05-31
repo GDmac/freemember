@@ -18,7 +18,7 @@ must enable it by following the installation instructions above.
 
 All documentation is now stored in our GitHub Wiki. Feel free to improve it if you have any helpful tips!
 
-[FreeMember documentation](https://github.com/expressodev/freemember/wiki)
+[FreeMember Documentation](https://github.com/expressodev/freemember/wiki)
 
 ## Release Notes
 
@@ -26,4 +26,4 @@ For a list of changes in each FreeMember release, please see our [Changelog](htt
 
 ## License
 
-FreeMember is released under the MIT License. For more information, see [LICENSE.txt](https://github.com/expressodev/freemember/blob/develop/LICENSE.txt)
+FreeMember is released under the MIT License. For more information, see [License](https://github.com/expressodev/freemember/blob/develop/LICENSE.md).

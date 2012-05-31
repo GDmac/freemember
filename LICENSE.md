@@ -1,4 +1,5 @@
 FreeMember add-on for ExpressionEngine
+
 Copyright (c) 2012 Adrian Macneil
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
