@@ -17,7 +17,7 @@ All documentation is now stored in our GitHub Wiki. Feel free to improve it if y
 
 ## Release Notes
 
-For a list of changes in each FreeMember release, please see our [Changelog](CHANGELOG.md)
+For a list of changes in each FreeMember release, please see our [Changelog](https://github.com/expressodev/freemember/blob/develop/CHANGELOG.md).
 
 ## Upgrading from FreeMember 1.x
 
