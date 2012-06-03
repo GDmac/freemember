@@ -344,6 +344,12 @@ class Freemember
 		$data['hidden_fields']['_params'] = $this->EE->safecracker->encrypt_input(serialize($this->EE->TMPL->tagparams));
 		$data['hidden_fields']['return_url'] = $this->EE->TMPL->fetch_param('return');
 
+		if ('PREVIOUS_URL' == $data['hidden_fields']['return_url'])
+		{
+			$data['hidden_fields']['return_url'] = isset($this->EE->session->tracker[1]) ?
+				$this->EE->session->tracker[1] : false;
+		}
+
 		return $this->EE->functions->form_declaration($data).
 			$this->EE->TMPL->parse_variables($this->EE->TMPL->tagdata, $this->tag_vars).'</form>';
 	}
@@ -355,14 +361,19 @@ class Freemember
 	{
 		if (empty($errors))
 		{
-			if ($return_url = $this->EE->input->post('return_url'))
+			if (($return_url = $this->EE->input->post('return_url')) != '')
 			{
 				$return_url = $this->EE->functions->create_url($return_url);
 			}
-			else
+			elseif (isset($this->EE->session->tracker[0]))
 			{
 				// back to previous page
-				$return_url = $this->EE->functions->form_backtrack(1);
+				$return_url = $this->EE->functions->create_url($this->EE->session->tracker[0]);
+			}
+			else
+			{
+				// pretty unlikely anyone will end up here
+				$return_url = $this->EE->functions->fetch_site_index();
 			}
 
 			$this->EE->functions->redirect($return_url);
