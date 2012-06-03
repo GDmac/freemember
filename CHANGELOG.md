@@ -1,5 +1,12 @@
 # FreeMember Release Notes
 
+## FreeMember 2.0.1
+*Released June 3, 2012*
+
+* Added return="PREVIOUS_URL" parameter to the login tag.
+* Fixed a bug where logout was redirecting back one page too many.
+* Moved documentation to the GitHub wiki.
+
 ## FreeMember 2.0.0
 *Released May 29, 2012*
 
