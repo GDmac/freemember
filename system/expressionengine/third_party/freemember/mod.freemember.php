@@ -361,7 +361,7 @@ class Freemember
 	{
 		if (empty($errors))
 		{
-			if (($return_url = $this->EE->input->post('return_url')) != '')
+			if (($return_url = $this->EE->input->get_post('return_url')) != '')
 			{
 				$return_url = $this->EE->functions->create_url($return_url);
 			}
