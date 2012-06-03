@@ -22,8 +22,8 @@ All documentation is now stored in our GitHub Wiki. Feel free to improve it if y
 
 ## Release Notes
 
-For a list of changes in each FreeMember release, please see our [Changelog](https://github.com/expressodev/freemember/blob/develop/CHANGELOG.md).
+For a list of changes in each FreeMember release, please see our [Changelog](https://github.com/expressodev/freemember/blob/master/CHANGELOG.md).
 
 ## License
 
-FreeMember is released under the MIT License. For more information, see [License](https://github.com/expressodev/freemember/blob/develop/LICENSE.md).
+FreeMember is released under the MIT License. For more information, see [License](https://github.com/expressodev/freemember/blob/master/LICENSE.md).
