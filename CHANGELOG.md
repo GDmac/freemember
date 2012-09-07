@@ -1,5 +1,10 @@
 # FreeMember Release Notes
 
+## FreeMember 2.0.2
+*Released September 7, 2012*
+
+* Allow the return url to be specified using GET variables.
+
 ## FreeMember 2.0.1
 *Released June 3, 2012*
 
