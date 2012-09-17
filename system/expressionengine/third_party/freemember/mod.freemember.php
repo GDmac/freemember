@@ -246,7 +246,11 @@ class Freemember
 		{
 			$value = $force_value;
 		}
-		elseif (false === ($value = $this->EE->input->post($name)))
+		elseif (isset($_POST[$name]))
+		{
+			$value = $this->EE->input->post($name, true);
+		}
+		else
 		{
 			// nothing posted, did we already have a template variable set?
 			$value = isset($this->tag_vars[0][$name]) ? $this->tag_vars[0][$name] : false;
@@ -276,6 +280,35 @@ class Freemember
 		$this->tag_vars[0]["field:$name"] = $field." />";
 	}
 
+	protected function _add_select_field($name, $options)
+	{
+		if (isset($_POST[$name]))
+		{
+			$value = $this->EE->input->post($name, true);
+		}
+		else
+		{
+			// nothing posted, did we already have a template variable set?
+			$value = isset($this->tag_vars[0][$name]) ? $this->tag_vars[0][$name] : false;
+		}
+
+		$this->tag_vars[0][$name] = $value;
+		$this->tag_vars[0]['error:'.$name] = false;
+
+		$options_html = '';
+		foreach ($options as $option)
+		{
+			$options_html .= "<option value='$option'";
+			if ($option == $value) $options_html .= " selected";
+			$options_html .=">$option</option>";
+		}
+
+		$field = "<select name='$name' id='$name'>$options_html</select>";
+
+		$this->tag_vars[0][$name.'_options'] = $options_html;
+		$this->tag_vars[0]["field:$name"] = $field;
+	}
+
 	protected function _add_member_fields($member = null)
 	{
 		// standard member fields
@@ -299,7 +332,15 @@ class Freemember
 				$this->tag_vars[0][$field->m_field_name] = $member->$field_id;
 			}
 
-			$this->_add_field($field->m_field_name);
+			if ('select' == $field->m_field_type)
+			{
+				$options = explode("\n", $field->m_field_list_items);
+				$this->_add_select_field($field->m_field_name, $options);
+			}
+			else
+			{
+				$this->_add_field($field->m_field_name);
+			}
 		}
 
 		// these fields aren't directly mapped to the db
