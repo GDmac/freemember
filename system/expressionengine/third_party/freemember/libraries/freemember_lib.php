@@ -199,8 +199,16 @@ class Freemember_lib
 		$member_id = $this->EE->db->select('member_id')
 			->where('email', $_POST['email'])->get('members')->row('member_id');
 
-		// update custom fields
-		$this->EE->freemember_model->update_member_custom($member_id, $_POST);
+		// update standard and custom member fields
+		// EE's register_member() method doesn't add all profile fields, such as date of birth
+		$member_data = $_POST;
+		unset($member_data['username']);
+		unset($member_data['screen_name']);
+		unset($member_data['email']);
+		unset($member_data['password']);
+
+		$this->EE->freemember_model->update_member($member_id, $member_data);
+		$this->EE->freemember_model->update_member_custom($member_id, $member_data);
 	}
 
 	public function update_profile()
