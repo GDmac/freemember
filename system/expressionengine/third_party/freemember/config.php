@@ -1,11 +1,10 @@
 <?php
 
-if ( ! defined('FREEMEMBER_NAME'))
-{
-	define('FREEMEMBER_NAME', 'FreeMember');
-	define('FREEMEMBER_CLASS', 'Freemember');
-	define('FREEMEMBER_VERSION', '2.1.0');
-	define('FREEMEMBER_DOCS', 'http://exp-resso.com/freemember');
+if ( ! defined('FREEMEMBER_NAME')) {
+    define('FREEMEMBER_NAME', 'FreeMember');
+    define('FREEMEMBER_CLASS', 'Freemember');
+    define('FREEMEMBER_VERSION', '2.1.0');
+    define('FREEMEMBER_DOCS', 'http://exp-resso.com/freemember');
 }
 
 $config['name'] = FREEMEMBER_NAME;

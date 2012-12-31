@@ -23,66 +23,63 @@
  * THE SOFTWARE.
  */
 
-include(PATH_THIRD.'freemember/config.php');
+require_once(PATH_THIRD.'freemember/config.php');
 
 class Freemember_upd
 {
-	public $version = FREEMEMBER_VERSION;
+    public $version = FREEMEMBER_VERSION;
 
-	public function __construct()
-	{
-		$this->EE =& get_instance();
-	}
+    public function __construct()
+    {
+        $this->EE =& get_instance();
+    }
 
-	public function install()
-	{
-		$this->uninstall();
+    public function install()
+    {
+        $this->uninstall();
 
-		// register module
-		$this->EE->db->insert('modules', array(
-			'module_name' => FREEMEMBER_CLASS,
-			'module_version' => $this->version,
-			'has_cp_backend' => 'n',
-			'has_publish_fields' => 'n'));
+        // register module
+        $this->EE->db->insert('modules', array(
+            'module_name' => FREEMEMBER_CLASS,
+            'module_version' => $this->version,
+            'has_cp_backend' => 'n',
+            'has_publish_fields' => 'n'));
 
-		$this->_register_action('act_login');
-		$this->_register_action('act_logout');
-		$this->_register_action('act_register');
-		$this->_register_action('act_update_profile');
-		$this->_register_action('act_forgot_password');
-		$this->_register_action('act_reset_password');
+        $this->_register_action('act_login');
+        $this->_register_action('act_logout');
+        $this->_register_action('act_register');
+        $this->_register_action('act_update_profile');
+        $this->_register_action('act_forgot_password');
+        $this->_register_action('act_reset_password');
 
-		return true;
-	}
+        return true;
+    }
 
-	public function update($current = '')
-	{
-		return true;
-	}
+    public function update($current = '')
+    {
+        return true;
+    }
 
-	function uninstall()
-	{
-		$this->EE->db->where('class', FREEMEMBER_CLASS);
-		$this->EE->db->delete('actions');
+    public function uninstall()
+    {
+        $this->EE->db->where('class', FREEMEMBER_CLASS);
+        $this->EE->db->delete('actions');
 
-		$this->EE->db->where('module_name', FREEMEMBER_CLASS);
-		$this->EE->db->delete('modules');
+        $this->EE->db->where('module_name', FREEMEMBER_CLASS);
+        $this->EE->db->delete('modules');
 
-		return true;
-	}
+        return true;
+    }
 
-	protected function _register_action($method)
-	{
-		$this->EE->db->where('class', FREEMEMBER_CLASS);
-		$this->EE->db->where('method', $method);
-		if ($this->EE->db->count_all_results('actions') == 0)
-		{
-			$this->EE->db->insert('actions', array(
-				'class' => FREEMEMBER_CLASS,
-				'method' => $method
-			));
-		}
-	}
+    protected function _register_action($method)
+    {
+        $this->EE->db->where('class', FREEMEMBER_CLASS);
+        $this->EE->db->where('method', $method);
+        if ($this->EE->db->count_all_results('actions') == 0) {
+            $this->EE->db->insert('actions', array(
+                'class' => FREEMEMBER_CLASS,
+                'method' => $method
+            ));
+        }
+    }
 }
-
-/* End of file */
