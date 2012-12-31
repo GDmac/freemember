@@ -185,6 +185,19 @@ class Freemember_lib
         unset($member_data['screen_name']);
         unset($member_data['email']);
         unset($member_data['password']);
+        unset($member_data['group_id']);
+
+        // check member group form param
+        if (false !== $this->form_param('group_id')) {
+            // is user-submitted group_id allowed?
+            $group_ids = array_filter(explode('|', $this->form_param('group_id')));
+
+            if (isset($_POST['group_id']) and in_array($_POST['group_id'], $group_ids)) {
+                $member_data['group_id'] = (int)$_POST['group_id'];
+            } elseif (count($group_ids) > 0) {
+                $member_data['group_id'] = reset($group_ids);
+            }
+        }
 
         $this->EE->freemember_model->update_member($member_id, $member_data);
         $this->EE->freemember_model->update_member_custom($member_id, $member_data);
@@ -205,6 +218,8 @@ class Freemember_lib
 
         // update member_data
         $member_id = $this->EE->session->userdata('member_id');
+        unset($_POST['group_id']);
+
         $this->EE->freemember_model->update_member($member_id, $_POST);
         $this->EE->freemember_model->update_member_custom($member_id, $_POST);
     }
