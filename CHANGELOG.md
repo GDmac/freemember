@@ -1,5 +1,16 @@
 # FreeMember Release Notes
 
+## FreeMember 2.1.1
+*Released December 31, 2012*
+
+* Add support for `group_id` parameter in register tag
+* Fix birthdate fields not being set in register tag
+
+## FreeMember 2.1.0
+*Released September 16, 2012*
+
+* Add support for "select" type custom fields in registration and update tags
+
 ## FreeMember 2.0.2
 *Released September 7, 2012*
 
