@@ -150,6 +150,7 @@ class Freemember_model extends CI_Model
     public function member_fields()
     {
         return array(
+            'group_id',
             'username',
             'email',
             'screen_name',
