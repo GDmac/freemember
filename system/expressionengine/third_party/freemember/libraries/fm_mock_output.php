@@ -29,20 +29,18 @@
  */
 class Fm_mock_output extends EE_Output
 {
-	public function __construct() {}
+    public function __construct() {}
 
-	/**
-	 * Stub show_message() function
-	 */
-	public function show_message() {}
+    /**
+     * Stub show_message() function
+     */
+    public function show_message() {}
 
-	/**
-	 * We still want show_user_error() to display messages
-	 */
-	public function show_user_error($type = 'submission', $errors, $heading = '')
-	{
-		get_instance()->old_output->show_user_error($type, $errors, $heading);
-	}
+    /**
+     * We still want show_user_error() to display messages
+     */
+    public function show_user_error($type = 'submission', $errors, $heading = '')
+    {
+        get_instance()->old_output->show_user_error($type, $errors, $heading);
+    }
 }
-
-/* End of file */

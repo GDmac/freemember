@@ -28,91 +28,88 @@ get_instance()->load->library('form_validation');
 
 class Fm_form_validation extends EE_Form_validation
 {
-	public function __construct($rules = array())
-	{
-		parent::__construct($rules);
-		$this->CI =& get_instance();
-		$this->EE =& $this->CI;
+    public function __construct($rules = array())
+    {
+        parent::__construct($rules);
+        $this->CI =& get_instance();
+        $this->EE =& $this->CI;
 
-		// overwrite EE form validation library
-		$this->EE->form_validation =& $this;
+        // overwrite EE form validation library
+        $this->EE->form_validation =& $this;
 
-		// load EE_Validate class
-		if ( ! class_exists('EE_Validate'))
-		{
-			require APPPATH.'libraries/Validate.php';
-		}
+        // load EE_Validate class
+        if ( ! class_exists('EE_Validate')) {
+            require APPPATH.'libraries/Validate.php';
+        }
 
-		$this->VAL = new EE_Validate();
-	}
+        $this->VAL = new EE_Validate();
+    }
 
-	public function error_array()
-	{
-		return $this->_error_array;
-	}
+    public function error_array()
+    {
+        return $this->_error_array;
+    }
 
-	/**
-	 * Awesome function to manually add an error to the form
-	 */
-	public function add_error($field, $message)
-	{
-		// make sure we have data for this field
-		if (empty($this->_field_data[$field]))
-		{
-			$this->set_rules($field, "lang:$field", '');
-		}
+    /**
+     * Awesome function to manually add an error to the form
+     */
+    public function add_error($field, $message)
+    {
+        // make sure we have data for this field
+        if (empty($this->_field_data[$field])) {
+            $this->set_rules($field, "lang:$field", '');
+        }
 
-		$this->_field_data[$field]['error'] = $message;
-		$this->_error_array[$field] = $message;
-	}
+        $this->_field_data[$field]['error'] = $message;
+        $this->_error_array[$field] = $message;
+    }
 
-	/**
-	 * Add validation rules instead of overwriting them
-	 */
-	public function add_rules($field, $label = '', $rules = '')
-	{
-		// are there any existing rules for this field?
-		if ( ! empty($this->_field_data[$field]['rules']))
-		{
-			$rules = trim($this->_field_data[$field]['rules'].'|'.$rules, '|');
-		}
+    /**
+     * Add validation rules instead of overwriting them
+     */
+    public function add_rules($field, $label = '', $rules = '')
+    {
+        // are there any existing rules for this field?
+        if ( ! empty($this->_field_data[$field]['rules'])) {
+            $rules = trim($this->_field_data[$field]['rules'].'|'.$rules, '|');
+        }
 
-		$this->set_rules($field, $label, $rules);
-	}
+        $this->set_rules($field, $label, $rules);
+    }
 
-	/**
-	 * Field must match password of current user (e.g. update profile)
-	 */
-	public function fm_current_password($str)
-	{
-		$current_member_id = $this->EE->session->userdata('member_id');
-		if ($str == '' || $current_member_id == 0) return true;
+    /**
+     * Field must match password of current user (e.g. update profile)
+     */
+    public function fm_current_password($str)
+    {
+        $current_member_id = $this->EE->session->userdata('member_id');
+        if ($str == '' || $current_member_id == 0) return true;
 
-		$this->set_message('fm_current_password', lang('invalid_password'));
-		$this->EE->load->library('auth');
-		return (bool)$this->EE->auth->authenticate_id($current_member_id, $str);
-	}
+        $this->set_message('fm_current_password', lang('invalid_password'));
+        $this->EE->load->library('auth');
 
-	public function fm_valid_captcha($str)
-	{
-		$count = $this->EE->db->from('captcha')
-			->where('word', $str)
-			->where('ip_address', $this->EE->input->ip_address())
-			->where('date > UNIX_TIMESTAMP()-7200')
-			->count_all_results();
+        return (bool) $this->EE->auth->authenticate_id($current_member_id, $str);
+    }
 
-		// don't delete captcha here, it will be deleted when EE validates the captcha later
-		$this->set_message('fm_valid_captcha', lang('captcha_incorrect'));
-		return $count > 0;
-	}
+    public function fm_valid_captcha($str)
+    {
+        $count = $this->EE->db->from('captcha')
+            ->where('word', $str)
+            ->where('ip_address', $this->EE->input->ip_address())
+            ->where('date > UNIX_TIMESTAMP()-7200')
+            ->count_all_results();
 
-	/**
-	 * Awesome: we only add this rule if we know the selection was invalid
-	 */
-	public function fm_invalid_selection($str)
-	{
-		return '' != $str;
-	}
+        // don't delete captcha here, it will be deleted when EE validates the captcha later
+        $this->set_message('fm_valid_captcha', lang('captcha_incorrect'));
+
+        return $count > 0;
+    }
+
+    /**
+     * Awesome: we only add this rule if we know the selection was invalid
+     */
+    public function fm_invalid_selection($str)
+    {
+        return '' != $str;
+    }
 }
-
-/* End of file */
