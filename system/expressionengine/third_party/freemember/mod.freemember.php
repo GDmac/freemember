@@ -348,6 +348,11 @@ class Freemember
 
         $data = array();
         $data['action'] = $this->EE->functions->create_url($this->EE->uri->uri_string);
+
+        if ($this->EE->TMPL->fetch_param('secure_action') == 'yes') {
+            $data['action'] = str_replace('http://', 'https://', $data['action']);
+        }
+
         $data['id'] = $this->EE->TMPL->fetch_param('form_id');
         $data['name'] = $this->EE->TMPL->fetch_param('form_name');
         $data['class'] = $this->EE->TMPL->fetch_param('form_class');
@@ -374,6 +379,9 @@ class Freemember
         if (empty($errors)) {
             if (($return_url = $this->EE->input->get_post('return_url')) != '') {
                 $return_url = $this->EE->functions->create_url($return_url);
+                if ($this->EE->TMPL->fetch_param('secure_return') == 'yes') {
+                    $return_url = str_replace('http://', 'https://', $return_url);
+                }
             } elseif (isset($this->EE->session->tracker[0])) {
                 // back to previous page
                 $return_url = $this->EE->functions->create_url($this->EE->session->tracker[0]);
