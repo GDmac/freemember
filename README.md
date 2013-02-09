@@ -9,10 +9,8 @@ static member templates bundled with EE.
 1. Copy the `freemember` folder to `system/expressionengine/third_party` on your server.
 2. Visit Add-ons > Modules > FreeMember on your server, and click Install next to FreeMember.
 
-**Upgrading from FreeMember 1.x**
-
 If you are upgrading from FreeMember 1.x, please note that FreeMember is now a module, and you
-must enable it by following the installation instructions above.
+must enable it by following the above instructions.
 
 ## Documentation
 
@@ -30,14 +28,15 @@ The following tags are available:
 ## Support
 
 If you have found a bug, or would like to request a feature, please use the
-[issue tracker](https://github.com/expressodev/freemember/issues?state=open).
+[GitHub Issue Tracker](https://github.com/expressodev/freemember/issues?state=open).
 
-General questions can be asked on the [ExpressionEngine Q&A site](http://expressionengine.stackexchange.com/)
-(remember to tag your question with `freemember` so it can be easily found).
+If you have a question about using FreeMember, please check [ExpressionEngine Answers](http://expressionengine.stackexchange.com/)
+to see whether anyone else has had the same issue, or ask a new question. Be sure to tag your question
+with `freemember` so it can be easily found.
 
 ## Release Notes
 
-For a list of changes in each FreeMember release, please see our [Changelog](https://github.com/expressodev/freemember/blob/master/CHANGELOG.md).
+For a complete list of changes in each FreeMember release, please see our [Changelog](https://github.com/expressodev/freemember/blob/master/CHANGELOG.md).
 
 ## License
 
