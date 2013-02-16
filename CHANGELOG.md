@@ -1,5 +1,10 @@
 # FreeMember Release Notes
 
+## FreeMember 2.1.2
+*Released February 16, 2013*
+
+* Add `secure_action=""` and `secure_return="yes"` parameters to all tags
+
 ## FreeMember 2.1.1
 *Released December 31, 2012*
 
