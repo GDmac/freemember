@@ -203,7 +203,10 @@ class Freemember
     }
 
     /**
-     * Placing this tag on a page logs the user out immediately
+     * Logout tag
+     *
+     * This tag is deprecated and will be removed in future. Please use
+     * {exp:freemember:logout_url} instead.
      */
     public function logout()
     {
@@ -362,9 +365,12 @@ class Freemember
         $data['hidden_fields']['_params'] = $this->EE->safecracker->encrypt_input(serialize($this->EE->TMPL->tagparams));
         $data['hidden_fields']['return_url'] = $this->EE->TMPL->fetch_param('return');
 
-        if ('PREVIOUS_URL' == $data['hidden_fields']['return_url']) {
-            $data['hidden_fields']['return_url'] = isset($this->EE->session->tracker[1]) ?
-                $this->EE->session->tracker[1] : false;
+        if ('PREVIOUS_URL' === $data['hidden_fields']['return_url']) {
+            $data['hidden_fields']['return_url'] = isset($this->EE->session->tracker[1])
+                ? $this->EE->session->tracker[1] : '';
+            if ('index' === $data['hidden_fields']['return_url']) {
+                $data['hidden_fields']['return_url'] = '/';
+            }
         }
 
         return $this->EE->functions->form_declaration($data).

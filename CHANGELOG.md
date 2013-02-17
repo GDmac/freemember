@@ -1,5 +1,10 @@
 # FreeMember Release Notes
 
+## FreeMember 2.1.3
+*Released February 17, 2013*
+
+* Fix return="PREVIOUS_URL" not working when PREVIOUS_URL was the home page
+
 ## FreeMember 2.1.2
 *Released February 16, 2013*
 

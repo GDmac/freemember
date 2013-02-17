@@ -18,7 +18,6 @@ The following tags are available:
 
 * [Login Tag](https://github.com/expressodev/freemember/blob/master/docs/login_tag.md)
 * [Logout Url Tag](https://github.com/expressodev/freemember/blob/master/docs/logout_url_tag.md)
-* [Logout Tag](https://github.com/expressodev/freemember/blob/master/docs/logout_tag.md) (Deprecated)
 * [Register Tag](https://github.com/expressodev/freemember/blob/master/docs/register_tag.md)
 * [Update Profile Tag](https://github.com/expressodev/freemember/blob/master/docs/update_profile_tag.md)
 * [Members Tag](https://github.com/expressodev/freemember/blob/master/docs/members_tag.md)
