@@ -1,5 +1,12 @@
 # FreeMember Release Notes
 
+## FreeMember 2.2.0
+*Released February 18, 2013*
+
+* Use CodeIgniter encryption library to encrypt form parameters (upgrading to FreeMember 2.2
+  requires setting an encryption key in your `config.php` file). This change makes FreeMember forms
+  play nicely with template caching where the same cached form may be used for multiple requests.
+
 ## FreeMember 2.1.3
 *Released February 17, 2013*
 

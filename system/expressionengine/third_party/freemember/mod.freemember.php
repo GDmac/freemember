@@ -346,9 +346,6 @@ class Freemember
      */
     protected function _build_form($action, $extra_hidden = array())
     {
-        $this->EE->load->add_package_path(PATH_MOD.'safecracker');
-        $this->EE->load->library('safecracker_lib');
-
         $data = array();
         $data['action'] = $this->EE->functions->create_url($this->EE->uri->uri_string);
 
@@ -362,7 +359,6 @@ class Freemember
 
         $data['hidden_fields'] = $extra_hidden;
         $data['hidden_fields']['ACT'] = $this->EE->functions->fetch_action_id(__CLASS__, $action);
-        $data['hidden_fields']['_params'] = $this->EE->safecracker->encrypt_input(serialize($this->EE->TMPL->tagparams));
         $data['hidden_fields']['return_url'] = $this->EE->TMPL->fetch_param('return');
 
         if ('PREVIOUS_URL' === $data['hidden_fields']['return_url']) {
@@ -372,6 +368,13 @@ class Freemember
                 $data['hidden_fields']['return_url'] = '/';
             }
         }
+
+        // prevents errors in case there are no tag params
+        $this->EE->TMPL->tagparams['encrypted_params'] = 1;
+
+        // encrypt tag parameters
+        $this->EE->load->library('encrypt');
+        $data['hidden_fields']['_params'] = $this->EE->encrypt->encode(json_encode($this->EE->TMPL->tagparams));
 
         return $this->EE->functions->form_declaration($data).
             $this->EE->TMPL->parse_variables($this->EE->TMPL->tagdata, $this->tag_vars).'</form>';

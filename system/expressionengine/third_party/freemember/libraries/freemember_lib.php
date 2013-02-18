@@ -504,10 +504,9 @@ class Freemember_lib
     public function form_param($key)
     {
         if (null === $this->_form_params) {
-            $this->EE->load->add_package_path(PATH_MOD.'safecracker');
-            $this->EE->load->library('safecracker_lib');
+            $this->EE->load->library('encrypt');
+            $this->_form_params = json_decode($this->EE->encrypt->decode($this->EE->input->post('_params')), true);
 
-            $this->_form_params = unserialize($this->EE->safecracker->decrypt_input($this->EE->input->post('_params'), false));
             if (empty($this->_form_params)) {
                 return $this->EE->output->show_user_error('general', array(lang('not_authorized')));
             }
