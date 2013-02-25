@@ -17,6 +17,10 @@ You can also specify multiple member IDs by separating them with pipes::
 
     {exp:freemember:members member_id="1|2|3"}
     {exp:freemember:members member_id="not 5|6"}
+    
+To display the current user's profile, use the `CURRENT_USER` constant:
+
+    {exp:freemember:members member_id="CURRENT_USER"}
 
 ### username
 Specify a username to display. You can use this in combination with a segment variable to display
