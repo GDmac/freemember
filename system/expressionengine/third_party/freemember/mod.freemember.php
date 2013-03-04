@@ -388,7 +388,7 @@ class Freemember
         if (empty($errors)) {
             if (($return_url = $this->EE->input->get_post('return_url')) != '') {
                 $return_url = $this->EE->functions->create_url($return_url);
-                if ($this->EE->freemember->form_param('secure_return') == 'yes') {
+                if (isset($_POST['_params']) && $this->EE->freemember->form_param('secure_return') == 'yes') {
                     $return_url = str_replace('http://', 'https://', $return_url);
                 }
             } elseif (isset($this->EE->session->tracker[0])) {
