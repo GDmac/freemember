@@ -1,5 +1,11 @@
 # FreeMember Release Notes
 
+## FreeMember 2.2.1
+*Released March 5, 2013*
+
+* Fix a [bug](http://expressionengine.stackexchange.com/q/6538/150) causing a "not authorized"
+  error message after submitting some FreeMember forms.
+
 ## FreeMember 2.2.0
 *Released February 18, 2013*
 
