@@ -3,7 +3,7 @@
 if ( ! defined('FREEMEMBER_NAME')) {
     define('FREEMEMBER_NAME', 'FreeMember');
     define('FREEMEMBER_CLASS', 'Freemember');
-    define('FREEMEMBER_VERSION', '2.2.1');
+    define('FREEMEMBER_VERSION', '2.2.2');
     define('FREEMEMBER_DOCS', 'http://exp-resso.com/freemember');
 }
 

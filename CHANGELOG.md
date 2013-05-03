@@ -1,5 +1,10 @@
 # FreeMember Release Notes
 
+## FreeMember 2.2.2
+*Released May 4, 2013*
+
+* Avoid calling do_hash() method deprecated in ExpressionEngine 2.6
+
 ## FreeMember 2.2.1
 *Released March 5, 2013*
 
