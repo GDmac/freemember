@@ -196,7 +196,7 @@ class Freemember_model extends CI_Model
         }
 
         if ( ! empty($data['password'])) {
-            $update_data['password'] = do_hash($data['password']);
+            $update_data['password'] = sha1($data['password']);
         }
 
         if ( ! empty($update_data)) {
