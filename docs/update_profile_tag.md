@@ -36,7 +36,7 @@ Enable inline error handling by setting error_handling to "inline".
 Specify the code you want to wrap the error messages in, if you are using inline error handling.
 For example::
 
-    {exp:freemember:update_profile error_handling="inline" error_delimiters="<span class="error">|</span>"}
+    {exp:freemember:update_profile error_handling="inline" error_delimiters="<span class='error'>|</span>"}
 
 ## Update Profile Tag Variables
 
