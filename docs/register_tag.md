@@ -58,7 +58,7 @@ submitted, it defaults to the email address. Likewise, if the ``screen_name`` is
 it defaults to the ``username``.
 
 In addition, you may submit any of the other member fields (and custom member fields) as
-available in the [Update Profile Tag](Update-Profile-Tag).
+available in the [Update Profile Tag](update_profile_tag.md).
 
 ### email
 Allow the user to specify their email address. This must be unique across all members in your
