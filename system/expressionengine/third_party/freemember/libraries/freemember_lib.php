@@ -96,7 +96,7 @@ class Freemember_lib
         // Check password lockout status
         if (true === $this->EE->session->check_password_lockout($_POST[$auth_field])) {
             $line = lang('password_lockout_in_effect');
-            $line = str_replace("%x", $this->EE->config->item('password_lockout_interval'), $line);
+            $line = str_replace("%d", $this->EE->config->item('password_lockout_interval'), $line);
 
             return array($auth_field => $line);
         }
