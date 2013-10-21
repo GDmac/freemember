@@ -180,6 +180,11 @@ class Freemember_model extends CI_Model
      */
     public function update_member($member_id, $data)
     {
+        if (ee()->extensions->active_hook('freemember_update_member_start')) {
+            $data = ee()->extensions->call('freemember_update_member_start', $member_id, $data);
+            if (ee()->extensions->end_script) return;
+        }
+
         $update_data = array();
         foreach ($this->member_fields() as $field) {
             if (isset($data[$field])) {
@@ -202,6 +207,11 @@ class Freemember_model extends CI_Model
      */
     public function update_member_custom($member_id, $data)
     {
+        if (ee()->extensions->active_hook('freemember_update_member_custom_start')) {
+            $data = ee()->extensions->call('freemember_update_member_custom_start', $member_id, $data);
+            if (ee()->extensions->end_script) return;
+        }
+
         $update_data = array();
         foreach ($this->member_custom_fields() as $field) {
             if (isset($data[$field->m_field_name])) {
