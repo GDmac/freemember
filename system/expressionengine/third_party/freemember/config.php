@@ -1,12 +1,12 @@
 <?php
 
+if (defined('APP_VER') && version_compare(APP_VER, '2.6.0', '<')) {
+    show_error('FreeMember requires ExpressionEngine version 2.6+, you have '.APP_VER);
+}
+
 if ( ! defined('FREEMEMBER_NAME')) {
     define('FREEMEMBER_NAME', 'FreeMember');
     define('FREEMEMBER_CLASS', 'Freemember');
-    define('FREEMEMBER_VERSION', '2.2.2');
-    define('FREEMEMBER_DOCS', 'http://exp-resso.com/freemember');
+    define('FREEMEMBER_VERSION', '2.3.0');
+    define('FREEMEMBER_DOCS', 'https://github.com/expressodev/freemember');
 }
-
-$config['name'] = FREEMEMBER_NAME;
-$config['version'] = FREEMEMBER_VERSION;
-$config['nsm_addon_updater']['versions_xml'] = 'http://exp-resso.com/rss/freemember/versions.rss';
