@@ -1,5 +1,15 @@
 # FreeMember Release Notes
 
+## FreeMember 2.3.0
+*Released October 20, 2013*
+
+* ExpressionEngine 2.6+ is now required.
+* Use EE 2.6 `ee()` syntax everywhere
+* Use native in EE models to update member data.
+* Add `freemember_update_member_start` and `freemember_update_member_custom_start` hooks to
+  edit member data before updating database.
+* Fix password lockout time language string
+
 ## FreeMember 2.2.2
 *Released May 4, 2013*
 
