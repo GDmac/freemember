@@ -192,7 +192,8 @@ class Freemember_model extends CI_Model
         }
 
         if ( ! empty($update_data)) {
-            ee()->db->where('member_id', $member_id)->update('members', $update_data);
+            ee()->load->model('member_model');
+            ee()->member_model->update_member($member_id, $update_data);
         }
     }
 
@@ -209,7 +210,8 @@ class Freemember_model extends CI_Model
         }
 
         if ( ! empty($update_data)) {
-            ee()->db->where('member_id', $member_id)->update('member_data', $update_data);
+            ee()->load->model('member_model');
+            ee()->member_model->update_member_data($member_id, $update_data);
         }
     }
 
