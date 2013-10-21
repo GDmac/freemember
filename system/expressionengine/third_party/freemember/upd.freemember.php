@@ -29,17 +29,12 @@ class Freemember_upd
 {
     public $version = FREEMEMBER_VERSION;
 
-    public function __construct()
-    {
-        $this->EE =& get_instance();
-    }
-
     public function install()
     {
         $this->uninstall();
 
         // register module
-        $this->EE->db->insert('modules', array(
+        ee()->db->insert('modules', array(
             'module_name' => FREEMEMBER_CLASS,
             'module_version' => $this->version,
             'has_cp_backend' => 'n',
@@ -62,21 +57,21 @@ class Freemember_upd
 
     public function uninstall()
     {
-        $this->EE->db->where('class', FREEMEMBER_CLASS);
-        $this->EE->db->delete('actions');
+        ee()->db->where('class', FREEMEMBER_CLASS);
+        ee()->db->delete('actions');
 
-        $this->EE->db->where('module_name', FREEMEMBER_CLASS);
-        $this->EE->db->delete('modules');
+        ee()->db->where('module_name', FREEMEMBER_CLASS);
+        ee()->db->delete('modules');
 
         return true;
     }
 
     protected function _register_action($method)
     {
-        $this->EE->db->where('class', FREEMEMBER_CLASS);
-        $this->EE->db->where('method', $method);
-        if ($this->EE->db->count_all_results('actions') == 0) {
-            $this->EE->db->insert('actions', array(
+        ee()->db->where('class', FREEMEMBER_CLASS);
+        ee()->db->where('method', $method);
+        if (ee()->db->count_all_results('actions') == 0) {
+            ee()->db->insert('actions', array(
                 'class' => FREEMEMBER_CLASS,
                 'method' => $method
             ));

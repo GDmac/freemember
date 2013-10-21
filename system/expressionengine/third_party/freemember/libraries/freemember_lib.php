@@ -25,20 +25,18 @@
 
 class Freemember_lib
 {
-    protected $EE;
     protected $_form_params;
 
     public function __construct()
     {
-        $this->EE =& get_instance();
-        $this->EE->freemember =& $this;
+        ee()->freemember =& $this;
 
-        $this->EE->load->model('freemember_model');
-        $this->EE->load->helper(array('string', 'security'));
-        $this->EE->lang->loadfile('freemember');
-        $this->EE->lang->loadfile('login');
-        $this->EE->lang->loadfile('member');
-        $this->EE->lang->loadfile('myaccount');
+        ee()->load->model('freemember_model');
+        ee()->load->helper(array('string', 'security'));
+        ee()->lang->loadfile('freemember');
+        ee()->lang->loadfile('login');
+        ee()->lang->loadfile('member');
+        ee()->lang->loadfile('myaccount');
     }
 
     /**
@@ -51,7 +49,7 @@ class Freemember_lib
         // check for fatal errors
         $this->check_banned();
 
-        $this->EE->load->library('auth');
+        ee()->load->library('auth');
         $errors = array();
 
         /* -------------------------------------------
@@ -59,8 +57,8 @@ class Freemember_lib
         /*  - Take control of member login routine
         /*  - Added EE 1.4.2
         */
-            $edata = $this->EE->extensions->call('member_member_login_start');
-            if ($this->EE->extensions->end_script === true) return;
+            $edata = ee()->extensions->call('member_member_login_start');
+            if (ee()->extensions->end_script === true) return;
         /*
         /* -------------------------------------------*/
 
@@ -89,25 +87,25 @@ class Freemember_lib
             return $errors;
         }
 
-        if ( ! $this->EE->auth->check_require_ip()) {
+        if ( ! ee()->auth->check_require_ip()) {
             return array($auth_field => lang('unauthorized_request'));
         }
 
         // Check password lockout status
-        if (true === $this->EE->session->check_password_lockout($_POST[$auth_field])) {
+        if (true === ee()->session->check_password_lockout($_POST[$auth_field])) {
             $line = lang('password_lockout_in_effect');
-            $line = str_replace("%d", $this->EE->config->item('password_lockout_interval'), $line);
+            $line = str_replace("%d", ee()->config->item('password_lockout_interval'), $line);
 
             return array($auth_field => $line);
         }
 
         if ($auth_field == 'email') {
-            $member = $this->EE->freemember_model->find_member_by_email($_POST['email']);
+            $member = ee()->freemember_model->find_member_by_email($_POST['email']);
             if (empty($member)) {
                 return array('email' => lang('invalid_email'));
             }
         } else {
-            $member = $this->EE->freemember_model->find_member_by_username($_POST['username']);
+            $member = ee()->freemember_model->find_member_by_username($_POST['username']);
             if (empty($member)) {
                 return array('username' => lang('invalid_username'));
             }
@@ -118,9 +116,9 @@ class Freemember_lib
             return array($auth_field => lang('mbr_account_not_active'));
         }
 
-        $sess = $this->EE->auth->authenticate_id($member->member_id, $_POST['password']);
+        $sess = ee()->auth->authenticate_id($member->member_id, $_POST['password']);
         if (! $sess) {
-            $this->EE->session->save_password_lockout($_POST[$auth_field]);
+            ee()->session->save_password_lockout($_POST[$auth_field]);
 
             return array('password' => lang('invalid_password'));
         }
@@ -132,7 +130,7 @@ class Freemember_lib
 
         // Allow multiple logins?
         // Do we allow multiple logins on the same account?
-        if ($this->EE->config->item('allow_multi_logins') == 'n' AND $sess->has_other_session()) {
+        if (ee()->config->item('allow_multi_logins') == 'n' AND $sess->has_other_session()) {
             return array($auth_field => lang('not_authorized'));
         }
 
@@ -143,7 +141,7 @@ class Freemember_lib
         }
 
         $sess->start_session();
-        $this->EE->freemember_model->update_online_user_stats();
+        ee()->freemember_model->update_online_user_stats();
 
         // support group_id_X_return params, rewrite return_url based on member group
         if ($return_url = $this->form_param("group_id_{$member->group_id}_return")) {
@@ -162,7 +160,7 @@ class Freemember_lib
         $this->check_banned();
 
         if ($error = $this->can_register()) {
-            $this->EE->output->show_user_error('general', array($error));
+            ee()->output->show_user_error('general', array($error));
         }
 
         if ($errors = $this->_validate_register()) {
@@ -175,7 +173,7 @@ class Freemember_lib
         $this->unmock_output();
 
         // get new member id
-        $member_id = $this->EE->db->select('member_id')
+        $member_id = ee()->db->select('member_id')
             ->where('email', $_POST['email'])->get('members')->row('member_id');
 
         // update standard and custom member fields
@@ -199,8 +197,8 @@ class Freemember_lib
             }
         }
 
-        $this->EE->freemember_model->update_member($member_id, $member_data);
-        $this->EE->freemember_model->update_member_custom($member_id, $member_data);
+        ee()->freemember_model->update_member($member_id, $member_data);
+        ee()->freemember_model->update_member_custom($member_id, $member_data);
     }
 
     public function update_profile()
@@ -209,7 +207,7 @@ class Freemember_lib
         $this->check_banned();
 
         if ($error = $this->can_update()) {
-            $this->EE->output->show_user_error('general', array($error));
+            ee()->output->show_user_error('general', array($error));
         }
 
         if ($errors = $this->_validate_update()) {
@@ -217,11 +215,11 @@ class Freemember_lib
         }
 
         // update member_data
-        $member_id = $this->EE->session->userdata('member_id');
+        $member_id = ee()->session->userdata('member_id');
         unset($_POST['group_id']);
 
-        $this->EE->freemember_model->update_member($member_id, $_POST);
-        $this->EE->freemember_model->update_member_custom($member_id, $_POST);
+        ee()->freemember_model->update_member($member_id, $_POST);
+        ee()->freemember_model->update_member_custom($member_id, $_POST);
     }
 
     /**
@@ -234,86 +232,86 @@ class Freemember_lib
         $this->check_banned();
 
         // form validation
-        $this->EE->load->library('fm_form_validation');
-        $this->EE->form_validation->add_rules('email', 'lang:email', 'required|valid_email');
+        ee()->load->library('fm_form_validation');
+        ee()->form_validation->add_rules('email', 'lang:email', 'required|valid_email');
 
-        if ($this->EE->form_validation->run() === false) {
-            return $this->EE->form_validation->error_array();
+        if (ee()->form_validation->run() === false) {
+            return ee()->form_validation->error_array();
         }
 
         // check member exists
-        $member = $this->EE->db->where('email', $this->EE->input->post('email'))->get('members')->row();
+        $member = ee()->db->where('email', ee()->input->post('email'))->get('members')->row();
         if (empty($member)) {
             return array('email' => lang('no_email_found'));
         }
 
         // clean old password reset codes
-        $this->EE->freemember_model->clean_password_reset_codes($member->member_id);
+        ee()->freemember_model->clean_password_reset_codes($member->member_id);
 
         // create new reset code
-        $reset_code = strtolower($this->EE->functions->random('alnum', 12));
-        $this->EE->db->insert('reset_password', array(
+        $reset_code = strtolower(ee()->functions->random('alnum', 12));
+        ee()->db->insert('reset_password', array(
             'member_id' => $member->member_id,
             'resetcode' => $reset_code,
-            'date' => $this->EE->localize->now,
+            'date' => ee()->localize->now,
         ));
 
         if ($reset_url = $this->form_param('reset')) {
-            $reset_url = $this->EE->functions->create_url($reset_url.'/'.$reset_code);
+            $reset_url = ee()->functions->create_url($reset_url.'/'.$reset_code);
         } else {
-            $reset_url = $this->EE->functions->fetch_site_index().QUERY_MARKER.
-                'ACT='.$this->EE->functions->fetch_action_id('Member', 'reset_password').'&id='.$reset_code;
+            $reset_url = ee()->functions->fetch_site_index().QUERY_MARKER.
+                'ACT='.ee()->functions->fetch_action_id('Member', 'reset_password').'&id='.$reset_code;
         }
 
         // send reset instructions email
-        $this->EE->load->library(array('email', 'template'));
+        ee()->load->library(array('email', 'template'));
 
-        $template = $this->EE->functions->fetch_email_template('forgot_password_instructions');
+        $template = ee()->functions->fetch_email_template('forgot_password_instructions');
 
         $email_vars = array();
         $email_vars[0]['name'] = $member->username;
         $email_vars[0]['reset_url'] = $reset_url;
-        $email_vars[0]['site_name'] = $this->EE->config->item('site_name');
-        $email_vars[0]['site_url'] = $this->EE->config->item('site_url');
+        $email_vars[0]['site_name'] = ee()->config->item('site_name');
+        $email_vars[0]['site_url'] = ee()->config->item('site_url');
 
-        $this->EE->email->wordwrap = true;
-        $this->EE->email->from($this->EE->config->item('webmaster_email'), $this->EE->config->item('webmaster_name'));
-        $this->EE->email->to($member->email);
-        $this->EE->email->subject($this->EE->template->parse_variables($template['title'], $email_vars));
-        $this->EE->email->message($this->EE->template->parse_variables($template['data'], $email_vars));
+        ee()->email->wordwrap = true;
+        ee()->email->from(ee()->config->item('webmaster_email'), ee()->config->item('webmaster_name'));
+        ee()->email->to($member->email);
+        ee()->email->subject(ee()->template->parse_variables($template['title'], $email_vars));
+        ee()->email->message(ee()->template->parse_variables($template['data'], $email_vars));
 
-        if ( ! $this->EE->email->send()) {
-            $this->EE->output->show_user_error('submission', array(lang('error_sending_email')));
+        if ( ! ee()->email->send()) {
+            ee()->output->show_user_error('submission', array(lang('error_sending_email')));
         }
     }
 
     public function reset_password()
     {
         // verify reset code
-        $member = $this->EE->freemember_model->find_member_by_reset_code($this->EE->input->post('reset_code'));
+        $member = ee()->freemember_model->find_member_by_reset_code(ee()->input->post('reset_code'));
         if (empty($member)) {
-            return $this->EE->output->show_user_error('submission', array(lang('mbr_id_not_found')));
+            return ee()->output->show_user_error('submission', array(lang('mbr_id_not_found')));
         }
 
         // allow valid_password validator to make sure password doesn't match username
         $_POST['username'] = $member->username;
 
-        $this->EE->load->library('fm_form_validation');
+        ee()->load->library('fm_form_validation');
 
-        $this->EE->form_validation->add_rules('password', 'lang:password', 'required|valid_password');
-        $this->EE->form_validation->add_rules('password_confirm', 'lang:password_confirm', 'required|matches[password]');
+        ee()->form_validation->add_rules('password', 'lang:password', 'required|valid_password');
+        ee()->form_validation->add_rules('password_confirm', 'lang:password_confirm', 'required|matches[password]');
 
         // run form validation
-        if ($this->EE->form_validation->run() === false) {
-            return $this->EE->form_validation->error_array();
+        if (ee()->form_validation->run() === false) {
+            return ee()->form_validation->error_array();
         }
 
         // update member password
-        $this->EE->freemember_model->update_member($member->member_id,
+        ee()->freemember_model->update_member($member->member_id,
             array('password' => $_POST['password']));
 
         // expire reset code
-        $this->EE->freemember_model->clean_password_reset_codes($member->member_id);
+        ee()->freemember_model->clean_password_reset_codes($member->member_id);
     }
 
     /**
@@ -332,25 +330,25 @@ class Freemember_lib
     public function check_banned()
     {
         // is user banned?
-        if ($this->EE->session->userdata('is_banned') === true) {
-            return $this->EE->output->show_user_error('general', array(lang('not_authorized')));
+        if (ee()->session->userdata('is_banned') === true) {
+            return ee()->output->show_user_error('general', array(lang('not_authorized')));
         }
 
         // blacklist/whitelist Check
-        if ($this->EE->blacklist->blacklisted == 'y' && $this->EE->blacklist->whitelisted == 'n') {
-            return $this->EE->output->show_user_error('general', array(lang('not_authorized')));
+        if (ee()->blacklist->blacklisted == 'y' && ee()->blacklist->whitelisted == 'n') {
+            return ee()->output->show_user_error('general', array(lang('not_authorized')));
         }
     }
 
     public function can_register()
     {
         // do we allow new member registrations?
-        if ($this->EE->config->item('allow_member_registration') == 'n') {
+        if (ee()->config->item('allow_member_registration') == 'n') {
             return lang('mbr_registration_not_allowed');
         }
 
         // is user already logged in?
-        if ($this->EE->session->userdata('member_id') != 0) {
+        if (ee()->session->userdata('member_id') != 0) {
             return lang('mbr_you_are_registered');
         }
     }
@@ -358,7 +356,7 @@ class Freemember_lib
     public function can_update()
     {
         // is user logged in?
-        if ($this->EE->session->userdata('member_id') == 0) {
+        if (ee()->session->userdata('member_id') == 0) {
             return lang('must_be_logged_in');
         }
     }
@@ -375,19 +373,19 @@ class Freemember_lib
         if ( ! isset($_POST['username'])) $_POST['username'] = $_POST['email'];
         if ( ! isset($_POST['screen_name'])) $_POST['screen_name'] = $_POST['username'];
 
-        $this->EE->load->library('fm_form_validation');
+        ee()->load->library('fm_form_validation');
         $this->_add_member_validation_rules();
 
         // rules specific to registration form
-        $this->EE->form_validation->add_rules('password', 'lang:password', 'required');
-        $this->EE->form_validation->add_rules('password_confirm', 'lang:password_confirm', 'required');
+        ee()->form_validation->add_rules('password', 'lang:password', 'required');
+        ee()->form_validation->add_rules('password_confirm', 'lang:password_confirm', 'required');
 
-        if ($this->EE->config->item('use_membership_captcha') == 'y') {
-            $this->EE->form_validation->add_rules('captcha', 'lang:captcha', 'required|fm_valid_captcha');
+        if (ee()->config->item('use_membership_captcha') == 'y') {
+            ee()->form_validation->add_rules('captcha', 'lang:captcha', 'required|fm_valid_captcha');
         }
 
-        if ($this->EE->config->item('require_terms_of_service') == 'y') {
-            $this->EE->form_validation->add_rules('accept_terms', 'lang:accept_terms', 'required');
+        if (ee()->config->item('require_terms_of_service') == 'y') {
+            ee()->form_validation->add_rules('accept_terms', 'lang:accept_terms', 'required');
         }
 
         /**
@@ -395,12 +393,12 @@ class Freemember_lib
          * Add any extra form validation rules
          * @since 2.0
          */
-        $this->EE->extensions->call('freemember_register_validation');
-        if ($this->EE->extensions->end_script === true) return;
+        ee()->extensions->call('freemember_register_validation');
+        if (ee()->extensions->end_script === true) return;
 
         // run form validation
-        if ($this->EE->form_validation->run() === false) {
-            return $this->EE->form_validation->error_array();
+        if (ee()->form_validation->run() === false) {
+            return ee()->form_validation->error_array();
         }
     }
 
@@ -409,18 +407,18 @@ class Freemember_lib
      */
     protected function _validate_update()
     {
-        $this->EE->load->library('fm_form_validation');
+        ee()->load->library('fm_form_validation');
         $this->_add_member_validation_rules();
 
         // set existing data
-        $this->EE->form_validation->set_old_value('username', $this->EE->session->userdata('username'));
-        $this->EE->form_validation->set_old_value('email', $this->EE->session->userdata('email'));
-        $this->EE->form_validation->set_old_value('screen_name', $this->EE->session->userdata('screen_name'));
+        ee()->form_validation->set_old_value('username', ee()->session->userdata('username'));
+        ee()->form_validation->set_old_value('email', ee()->session->userdata('email'));
+        ee()->form_validation->set_old_value('screen_name', ee()->session->userdata('screen_name'));
 
         // if new password is submitted, then current_password and password_confirm are required
         if ( ! empty($_POST['password'])) {
-            $this->EE->form_validation->add_rules('current_password', 'lang:current_password', 'required');
-            $this->EE->form_validation->add_rules('password_confirm', 'lang:password_confirm', 'required');
+            ee()->form_validation->add_rules('current_password', 'lang:current_password', 'required');
+            ee()->form_validation->add_rules('password_confirm', 'lang:password_confirm', 'required');
         }
 
         /**
@@ -428,12 +426,12 @@ class Freemember_lib
          * Add any extra form validation rules
          * @since 2.0
          */
-        $this->EE->extensions->call('freemember_update_validation');
-        if ($this->EE->extensions->end_script === true) return;
+        ee()->extensions->call('freemember_update_validation');
+        if (ee()->extensions->end_script === true) return;
 
         // run form validation
-        if ($this->EE->form_validation->run() === false) {
-            return $this->EE->form_validation->error_array();
+        if (ee()->form_validation->run() === false) {
+            return ee()->form_validation->error_array();
         }
     }
 
@@ -446,40 +444,40 @@ class Freemember_lib
         // check for require="" param
         $require_fields = explode('|', $this->form_param('require'));
         foreach ($require_fields as $field) {
-            $this->EE->form_validation->add_rules($field, "lang:$field", 'required');
+            ee()->form_validation->add_rules($field, "lang:$field", 'required');
         }
 
         // check for rules:field="" params
         foreach ($this->_form_params as $key => $rules) {
             if (0 === strpos($key, 'rules:')) {
                 $field = substr($key, 6);
-                $this->EE->form_validation->add_rules($field, "lang:$field", $rules);
+                ee()->form_validation->add_rules($field, "lang:$field", $rules);
             }
         }
 
         // required if submitted (can't be set to empty string)
         foreach (array('email', 'email_confirm', 'username', 'screen_name') as $field) {
             if (isset($_POST[$field])) {
-                $this->EE->form_validation->add_rules($field, "lang:$field", 'required');
+                ee()->form_validation->add_rules($field, "lang:$field", 'required');
             }
         }
 
         // standard rules
-        $this->EE->form_validation->add_rules('email', 'lang:email', 'valid_user_email');
-        $this->EE->form_validation->add_rules('email_confirm', 'lang:email_confirm', 'matches[email]');
-        $this->EE->form_validation->add_rules('username', 'lang:username', 'valid_username');
-        $this->EE->form_validation->add_rules('screen_name', 'lang:screen_name', 'valid_screen_name');
-        $this->EE->form_validation->add_rules('password', 'lang:password', 'valid_password');
-        $this->EE->form_validation->add_rules('password_confirm', 'lang:password', 'matches[password]');
-        $this->EE->form_validation->add_rules('current_password', 'lang:current_password', 'fm_current_password');
+        ee()->form_validation->add_rules('email', 'lang:email', 'valid_user_email');
+        ee()->form_validation->add_rules('email_confirm', 'lang:email_confirm', 'matches[email]');
+        ee()->form_validation->add_rules('username', 'lang:username', 'valid_username');
+        ee()->form_validation->add_rules('screen_name', 'lang:screen_name', 'valid_screen_name');
+        ee()->form_validation->add_rules('password', 'lang:password', 'valid_password');
+        ee()->form_validation->add_rules('password_confirm', 'lang:password', 'matches[password]');
+        ee()->form_validation->add_rules('current_password', 'lang:current_password', 'fm_current_password');
 
         // trigger unique checks
-        $this->EE->form_validation->set_old_value('username', ' ');
-        $this->EE->form_validation->set_old_value('email', ' ');
-        $this->EE->form_validation->set_old_value('screen_name', ' ');
+        ee()->form_validation->set_old_value('username', ' ');
+        ee()->form_validation->set_old_value('email', ' ');
+        ee()->form_validation->set_old_value('screen_name', ' ');
 
         // custom field rules
-        foreach ($this->EE->freemember_model->member_custom_fields() as $field) {
+        foreach (ee()->freemember_model->member_custom_fields() as $field) {
             $field_rules = '';
             if ($field->m_field_required == 'y') {
                 $field_rules .= '|required';
@@ -488,13 +486,13 @@ class Freemember_lib
             // ensure select fields match a valid option
             if ($field->m_field_type == 'select') {
                 $options = explode("\n", $field->m_field_list_items);
-                if ( ! in_array($this->EE->input->post($field->m_field_name), $options)) {
+                if ( ! in_array(ee()->input->post($field->m_field_name), $options)) {
                     $field_rules .= '|fm_invalid_selection';
                 }
             }
 
             // do this whether or not we have any rules, so it updates the field label
-            $this->EE->form_validation->add_rules($field->m_field_name, $field->m_field_label, $field_rules);
+            ee()->form_validation->add_rules($field->m_field_name, $field->m_field_label, $field_rules);
         }
     }
 
@@ -504,11 +502,11 @@ class Freemember_lib
     public function form_param($key)
     {
         if (null === $this->_form_params) {
-            $this->EE->load->library('encrypt');
-            $this->_form_params = json_decode($this->EE->encrypt->decode($this->EE->input->post('_params')), true);
+            ee()->load->library('encrypt');
+            $this->_form_params = json_decode(ee()->encrypt->decode(ee()->input->post('_params')), true);
 
             if (empty($this->_form_params)) {
-                return $this->EE->output->show_user_error('general', array(lang('not_authorized')));
+                return ee()->output->show_user_error('general', array(lang('not_authorized')));
             }
         }
 
@@ -532,12 +530,12 @@ class Freemember_lib
     {
         static $current_member = null;
         if (null === $current_member) {
-            if ($this->EE->session->userdata('member_id') == 0) {
+            if (ee()->session->userdata('member_id') == 0) {
                 $current_member = false;
             } else {
-                $current_member = $this->EE->db->from('members m')
+                $current_member = ee()->db->from('members m')
                     ->join('member_data md', 'md.member_id = m.member_id', 'left')
-                    ->where('m.member_id', $this->EE->session->userdata('member_id'))
+                    ->where('m.member_id', ee()->session->userdata('member_id'))
                     ->get()->row();
             }
         }
@@ -568,9 +566,9 @@ class Freemember_lib
      */
     public function mock_output()
     {
-        $this->EE->load->library('fm_mock_output');
-        $this->EE->old_output =& $this->EE->output;
-        $this->EE->output =& $this->EE->fm_mock_output;
+        ee()->load->library('fm_mock_output');
+        ee()->old_output =& ee()->output;
+        ee()->output =& ee()->fm_mock_output;
     }
 
     /**
@@ -578,7 +576,7 @@ class Freemember_lib
      */
     public function unmock_output()
     {
-        $this->EE->output =& $this->EE->old_output;
-        unset($this->EE->old_output);
+        ee()->output =& ee()->old_output;
+        unset(ee()->old_output);
     }
 }

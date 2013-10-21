@@ -25,14 +25,6 @@
 
 class Freemember_model extends CI_Model
 {
-    protected $EE;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->EE =& get_instance();
-    }
-
     public function find_members($params)
     {
         $defaults = array(
@@ -53,7 +45,7 @@ class Freemember_model extends CI_Model
         // clean params
         $params['sort'] = strtoupper($params['sort']) == 'DESC' ? 'DESC' : 'ASC';
         if ('CURRENT_USER' == $params['member_id']) {
-            $params['member_id'] = $this->EE->session->userdata('member_id');
+            $params['member_id'] = ee()->session->userdata('member_id');
         }
 
         // validate orderby clause
@@ -99,25 +91,25 @@ class Freemember_model extends CI_Model
         }
 
         // run query
-        $this->EE->db->select(implode(', ', $sql_select))
+        ee()->db->select(implode(', ', $sql_select))
             ->from('members m')
             ->join('member_data md', 'md.member_id = m.member_id', 'left')
             ->where($sql_where, null, false)
             ->order_by($params['orderby'], $params['sort']);
 
         if ($params['count_all_results']) {
-            return $this->EE->db->count_all_results();
+            return ee()->db->count_all_results();
         }
 
-        $this->EE->db->limit((int) $params['limit'], (int) $params['offset']);
+        ee()->db->limit((int) $params['limit'], (int) $params['offset']);
 
-        return $this->EE->db->get()->result_array();
+        return ee()->db->get()->result_array();
     }
 
     public function find_member_by_reset_code($reset_code)
     {
         if (empty($reset_code)) return false;
-        return $this->EE->db->from('reset_password r')
+        return ee()->db->from('reset_password r')
             ->join('members m', 'm.member_id = r.member_id')
             ->where('resetcode', $reset_code)
             ->where('date > UNIX_TIMESTAMP()-7200')
@@ -126,12 +118,12 @@ class Freemember_model extends CI_Model
 
     public function find_member_by_username($username)
     {
-        return $this->EE->db->where('username', $username)->get('members')->row();
+        return ee()->db->where('username', $username)->get('members')->row();
     }
 
     public function find_member_by_email($email)
     {
-        return $this->EE->db->where('email', $email)->get('members')->row();
+        return ee()->db->where('email', $email)->get('members')->row();
     }
 
     /**
@@ -139,7 +131,7 @@ class Freemember_model extends CI_Model
      */
     public function clean_password_reset_codes($member_id)
     {
-        $this->EE->db->where('member_id', $member_id)
+        ee()->db->where('member_id', $member_id)
             ->or_where('date < UNIX_TIMESTAMP()-7200')
             ->delete('reset_password');
     }
@@ -177,7 +169,7 @@ class Freemember_model extends CI_Model
     {
         static $member_custom_fields = null;
         if (null === $member_custom_fields) {
-            $member_custom_fields = $this->EE->db->get('member_fields')->result();
+            $member_custom_fields = ee()->db->get('member_fields')->result();
         }
 
         return $member_custom_fields;
@@ -200,7 +192,7 @@ class Freemember_model extends CI_Model
         }
 
         if ( ! empty($update_data)) {
-            $this->EE->db->where('member_id', $member_id)->update('members', $update_data);
+            ee()->db->where('member_id', $member_id)->update('members', $update_data);
         }
     }
 
@@ -217,7 +209,7 @@ class Freemember_model extends CI_Model
         }
 
         if ( ! empty($update_data)) {
-            $this->EE->db->where('member_id', $member_id)->update('member_data', $update_data);
+            ee()->db->where('member_id', $member_id)->update('member_data', $update_data);
         }
     }
 
@@ -226,36 +218,36 @@ class Freemember_model extends CI_Model
      */
     public function update_online_user_stats()
     {
-        if ($this->EE->config->item('enable_online_user_tracking') == 'n' OR
-            $this->EE->config->item('disable_all_tracking') == 'y')
+        if (ee()->config->item('enable_online_user_tracking') == 'n' OR
+            ee()->config->item('disable_all_tracking') == 'y')
         {
             return;
         }
 
         // Update stats
-        $cutoff = $this->EE->localize->now - (15 * 60);
-        $anon = ($this->EE->input->post('anon') == 1) ? '' : 'y';
+        $cutoff = ee()->localize->now - (15 * 60);
+        $anon = (ee()->input->post('anon') == 1) ? '' : 'y';
 
-        $in_forum = ($this->EE->input->get_post('FROM') == 'forum') ? 'y' : 'n';
+        $in_forum = (ee()->input->get_post('FROM') == 'forum') ? 'y' : 'n';
 
-        $escaped_ip = $this->EE->db->escape_str($this->EE->input->ip_address());
+        $escaped_ip = ee()->db->escape_str(ee()->input->ip_address());
 
-        $this->EE->db->where('site_id', $this->EE->config->item('site_id'))
+        ee()->db->where('site_id', ee()->config->item('site_id'))
                      ->where("(ip_address = '".$escaped_ip."' AND member_id = '0')", '', false)
                      ->or_where('date < ', $cutoff)
                      ->delete('online_users');
 
         $data = array(
-                        'member_id'		=> $this->EE->session->userdata('member_id'),
-                        'name'			=> ($this->EE->session->userdata('screen_name') == '') ? $this->EE->session->userdata('username') : $this->EE->session->userdata('screen_name'),
-                        'ip_address'	=> $this->EE->input->ip_address(),
+                        'member_id'		=> ee()->session->userdata('member_id'),
+                        'name'			=> (ee()->session->userdata('screen_name') == '') ? ee()->session->userdata('username') : ee()->session->userdata('screen_name'),
+                        'ip_address'	=> ee()->input->ip_address(),
                         'in_forum'		=> $in_forum,
-                        'date'			=> $this->EE->localize->now,
+                        'date'			=> ee()->localize->now,
                         'anon'			=> $anon,
-                        'site_id'		=> $this->EE->config->item('site_id')
+                        'site_id'		=> ee()->config->item('site_id')
                     );
 
-        $this->EE->db->where('ip_address', $this->EE->input->ip_address())
+        ee()->db->where('ip_address', ee()->input->ip_address())
                      ->where('member_id', $data['member_id'])
                      ->update('online_users', $data);
     }

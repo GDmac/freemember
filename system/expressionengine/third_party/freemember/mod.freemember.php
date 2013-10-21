@@ -37,8 +37,7 @@ class Freemember
 
     public function __construct()
     {
-        $this->EE =& get_instance();
-        $this->EE->load->library('freemember_lib');
+        ee()->load->library('freemember_lib');
     }
 
     /**
@@ -64,7 +63,7 @@ class Freemember
      */
     public function act_login()
     {
-        self::$login_errors = $this->EE->freemember->login();
+        self::$login_errors = ee()->freemember->login();
         $this->_action_complete(self::$login_errors);
     }
 
@@ -73,15 +72,15 @@ class Freemember
      */
     public function register()
     {
-        if ($error = $this->EE->freemember->can_register()) return $error;
+        if ($error = ee()->freemember->can_register()) return $error;
 
         // form fields
         $this->tag_vars = array();
         $this->_add_member_fields();
 
         // generate captcha
-        if ($this->EE->config->item('use_membership_captcha') == 'y') {
-            $this->tag_vars[0]['captcha'] = $this->EE->functions->create_captcha();
+        if (ee()->config->item('use_membership_captcha') == 'y') {
+            $this->tag_vars[0]['captcha'] = ee()->functions->create_captcha();
         }
 
         // inline errors
@@ -95,7 +94,7 @@ class Freemember
      */
     public function act_register()
     {
-        self::$registration_errors = $this->EE->freemember->register();
+        self::$registration_errors = ee()->freemember->register();
         $this->_action_complete(self::$registration_errors);
     }
 
@@ -104,9 +103,9 @@ class Freemember
      */
     public function update_profile()
     {
-        if ($error = $this->EE->freemember->can_update()) return $error;
+        if ($error = ee()->freemember->can_update()) return $error;
 
-        $member = $this->EE->freemember->current_member();
+        $member = ee()->freemember->current_member();
 
         // form fields
         $this->tag_vars = array();
@@ -123,7 +122,7 @@ class Freemember
      */
     public function act_update_profile()
     {
-        self::$update_profile_errors = $this->EE->freemember->update_profile();
+        self::$update_profile_errors = ee()->freemember->update_profile();
         $this->_action_complete(self::$update_profile_errors);
     }
 
@@ -132,13 +131,13 @@ class Freemember
      */
     public function members()
     {
-        $search = $this->EE->TMPL->tagparams;
-        $members = $this->EE->freemember_model->find_members($search);
+        $search = ee()->TMPL->tagparams;
+        $members = ee()->freemember_model->find_members($search);
         if ($members) {
-            return $this->EE->TMPL->parse_variables($this->EE->TMPL->tagdata, $members);
+            return ee()->TMPL->parse_variables(ee()->TMPL->tagdata, $members);
         }
 
-        return $this->EE->TMPL->no_results();
+        return ee()->TMPL->no_results();
     }
 
     /**
@@ -160,25 +159,25 @@ class Freemember
      */
     public function act_forgot_password()
     {
-        self::$forgot_password_errors = $this->EE->freemember->forgot_password();
+        self::$forgot_password_errors = ee()->freemember->forgot_password();
         $this->_action_complete(self::$forgot_password_errors);
     }
 
     public function reset_password()
     {
         // was reset code specified in params?
-        if (($reset_code = $this->EE->TMPL->fetch_param('reset_code')) === false) {
+        if (($reset_code = ee()->TMPL->fetch_param('reset_code')) === false) {
             // freemember 1.x compabitility
-            if (($reset_code = $this->EE->TMPL->fetch_param('code')) === false) {
+            if (($reset_code = ee()->TMPL->fetch_param('code')) === false) {
                 // reset code defaults to last segment
-                $reset_code = $this->EE->uri->segment($this->EE->uri->total_segments());
+                $reset_code = ee()->uri->segment(ee()->uri->total_segments());
             }
         }
 
         // verify reset code
-        $member = $this->EE->freemember_model->find_member_by_reset_code($reset_code);
+        $member = ee()->freemember_model->find_member_by_reset_code($reset_code);
         if (empty($member)) {
-            return $this->EE->TMPL->no_results();
+            return ee()->TMPL->no_results();
         }
 
         $this->tag_vars = array();
@@ -198,7 +197,7 @@ class Freemember
 
     public function act_reset_password()
     {
-        self::$reset_password_errors = $this->EE->freemember->reset_password();
+        self::$reset_password_errors = ee()->freemember->reset_password();
         $this->_action_complete(self::$reset_password_errors);
     }
 
@@ -210,16 +209,16 @@ class Freemember
      */
     public function logout()
     {
-        $_GET['return_url'] = $this->EE->TMPL->fetch_param('return');
+        $_GET['return_url'] = ee()->TMPL->fetch_param('return');
         $this->act_logout();
     }
 
     public function logout_url()
     {
-        $params = array_filter(array('return_url' => $this->EE->TMPL->fetch_param('return')));
+        $params = array_filter(array('return_url' => ee()->TMPL->fetch_param('return')));
 
-        $url = $this->EE->functions->fetch_site_index().QUERY_MARKER.
-            'ACT='.$this->EE->functions->fetch_action_id(__CLASS__, 'act_logout');
+        $url = ee()->functions->fetch_site_index().QUERY_MARKER.
+            'ACT='.ee()->functions->fetch_action_id(__CLASS__, 'act_logout');
 
         if ( ! empty($params)) {
             $url .= '&'.http_build_query($params);
@@ -230,7 +229,7 @@ class Freemember
 
     public function act_logout()
     {
-        $this->EE->freemember->logout();
+        ee()->freemember->logout();
         $this->_action_complete();
     }
 
@@ -242,7 +241,7 @@ class Freemember
         if (null !== $force_value || 'password' == $type) {
             $value = $force_value;
         } elseif (isset($_POST[$name])) {
-            $value = $this->EE->input->post($name, true);
+            $value = ee()->input->post($name, true);
         } else {
             // nothing posted, did we already have a template variable set?
             $value = isset($this->tag_vars[0][$name]) ? $this->tag_vars[0][$name] : false;
@@ -271,7 +270,7 @@ class Freemember
     protected function _add_select_field($name, $options)
     {
         if (isset($_POST[$name])) {
-            $value = $this->EE->input->post($name, true);
+            $value = ee()->input->post($name, true);
         } else {
             // nothing posted, did we already have a template variable set?
             $value = isset($this->tag_vars[0][$name]) ? $this->tag_vars[0][$name] : false;
@@ -296,7 +295,7 @@ class Freemember
     protected function _add_member_fields($member = null)
     {
         // standard member fields
-        foreach ($this->EE->freemember_model->member_fields() as $field) {
+        foreach (ee()->freemember_model->member_fields() as $field) {
             if ($member) {
                 $this->tag_vars[0][$field] = $member->$field;
             }
@@ -305,7 +304,7 @@ class Freemember
         }
 
         // custom member fields
-        foreach ($this->EE->freemember_model->member_custom_fields() as $field) {
+        foreach (ee()->freemember_model->member_custom_fields() as $field) {
             if ($member) {
                 $field_id = 'm_field_id_'.$field->m_field_id;
                 $this->tag_vars[0][$field_id] = $member->$field_id;
@@ -336,7 +335,7 @@ class Freemember
     {
         if (is_array($errors)) {
             foreach ($errors as $key => $value) {
-                $this->tag_vars[0]["error:$key"] = $this->EE->freemember->wrap_error($value);
+                $this->tag_vars[0]["error:$key"] = ee()->freemember->wrap_error($value);
             }
         }
     }
@@ -347,37 +346,37 @@ class Freemember
     protected function _build_form($action, $extra_hidden = array())
     {
         $data = array();
-        $data['action'] = $this->EE->functions->create_url($this->EE->uri->uri_string);
+        $data['action'] = ee()->functions->create_url(ee()->uri->uri_string);
 
-        if ($this->EE->TMPL->fetch_param('secure_action') == 'yes') {
+        if (ee()->TMPL->fetch_param('secure_action') == 'yes') {
             $data['action'] = str_replace('http://', 'https://', $data['action']);
         }
 
-        $data['id'] = $this->EE->TMPL->fetch_param('form_id');
-        $data['name'] = $this->EE->TMPL->fetch_param('form_name');
-        $data['class'] = $this->EE->TMPL->fetch_param('form_class');
+        $data['id'] = ee()->TMPL->fetch_param('form_id');
+        $data['name'] = ee()->TMPL->fetch_param('form_name');
+        $data['class'] = ee()->TMPL->fetch_param('form_class');
 
         $data['hidden_fields'] = $extra_hidden;
-        $data['hidden_fields']['ACT'] = $this->EE->functions->fetch_action_id(__CLASS__, $action);
-        $data['hidden_fields']['return_url'] = $this->EE->TMPL->fetch_param('return');
+        $data['hidden_fields']['ACT'] = ee()->functions->fetch_action_id(__CLASS__, $action);
+        $data['hidden_fields']['return_url'] = ee()->TMPL->fetch_param('return');
 
         if ('PREVIOUS_URL' === $data['hidden_fields']['return_url']) {
-            $data['hidden_fields']['return_url'] = isset($this->EE->session->tracker[1])
-                ? $this->EE->session->tracker[1] : '';
+            $data['hidden_fields']['return_url'] = isset(ee()->session->tracker[1])
+                ? ee()->session->tracker[1] : '';
             if ('index' === $data['hidden_fields']['return_url']) {
                 $data['hidden_fields']['return_url'] = '/';
             }
         }
 
         // prevents errors in case there are no tag params
-        $this->EE->TMPL->tagparams['encrypted_params'] = 1;
+        ee()->TMPL->tagparams['encrypted_params'] = 1;
 
         // encrypt tag parameters
-        $this->EE->load->library('encrypt');
-        $data['hidden_fields']['_params'] = $this->EE->encrypt->encode(json_encode($this->EE->TMPL->tagparams));
+        ee()->load->library('encrypt');
+        $data['hidden_fields']['_params'] = ee()->encrypt->encode(json_encode(ee()->TMPL->tagparams));
 
-        return $this->EE->functions->form_declaration($data).
-            $this->EE->TMPL->parse_variables($this->EE->TMPL->tagdata, $this->tag_vars).'</form>';
+        return ee()->functions->form_declaration($data).
+            ee()->TMPL->parse_variables(ee()->TMPL->tagdata, $this->tag_vars).'</form>';
     }
 
     /**
@@ -386,24 +385,24 @@ class Freemember
     protected function _action_complete($errors = null)
     {
         if (empty($errors)) {
-            if (($return_url = $this->EE->input->get_post('return_url')) != '') {
-                $return_url = $this->EE->functions->create_url($return_url);
-                if (isset($_POST['_params']) && $this->EE->freemember->form_param('secure_return') == 'yes') {
+            if (($return_url = ee()->input->get_post('return_url')) != '') {
+                $return_url = ee()->functions->create_url($return_url);
+                if (isset($_POST['_params']) && ee()->freemember->form_param('secure_return') == 'yes') {
                     $return_url = str_replace('http://', 'https://', $return_url);
                 }
-            } elseif (isset($this->EE->session->tracker[0])) {
+            } elseif (isset(ee()->session->tracker[0])) {
                 // back to previous page
-                $return_url = $this->EE->functions->create_url($this->EE->session->tracker[0]);
+                $return_url = ee()->functions->create_url(ee()->session->tracker[0]);
             } else {
                 // pretty unlikely anyone will end up here
-                $return_url = $this->EE->functions->fetch_site_index();
+                $return_url = ee()->functions->fetch_site_index();
             }
 
-            $this->EE->functions->redirect($return_url);
-        } elseif ($this->EE->freemember->form_param('error_handling') == 'inline') {
-            return $this->EE->core->generate_page();
+            ee()->functions->redirect($return_url);
+        } elseif (ee()->freemember->form_param('error_handling') == 'inline') {
+            return ee()->core->generate_page();
         }
 
-        return $this->EE->output->show_user_error(false, $errors);
+        return ee()->output->show_user_error(false, $errors);
     }
 }

@@ -27,8 +27,4 @@ require_once(PATH_THIRD.'freemember/config.php');
 
 class Freemember_mcp
 {
-    public function __construct()
-    {
-        $this->EE =& get_instance();
-    }
 }

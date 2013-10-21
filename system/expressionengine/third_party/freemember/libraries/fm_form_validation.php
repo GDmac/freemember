@@ -31,11 +31,9 @@ class Fm_form_validation extends EE_Form_validation
     public function __construct($rules = array())
     {
         parent::__construct($rules);
-        $this->CI =& get_instance();
-        $this->EE =& $this->CI;
 
         // overwrite EE form validation library
-        $this->EE->form_validation =& $this;
+        ee()->form_validation =& $this;
 
         // load EE_Validate class
         if ( ! class_exists('EE_Validate')) {
@@ -82,20 +80,20 @@ class Fm_form_validation extends EE_Form_validation
      */
     public function fm_current_password($str)
     {
-        $current_member_id = $this->EE->session->userdata('member_id');
+        $current_member_id = ee()->session->userdata('member_id');
         if ($str == '' || $current_member_id == 0) return true;
 
         $this->set_message('fm_current_password', lang('invalid_password'));
-        $this->EE->load->library('auth');
+        ee()->load->library('auth');
 
-        return (bool) $this->EE->auth->authenticate_id($current_member_id, $str);
+        return (bool) ee()->auth->authenticate_id($current_member_id, $str);
     }
 
     public function fm_valid_captcha($str)
     {
-        $count = $this->EE->db->from('captcha')
+        $count = ee()->db->from('captcha')
             ->where('word', $str)
-            ->where('ip_address', $this->EE->input->ip_address())
+            ->where('ip_address', ee()->input->ip_address())
             ->where('date > UNIX_TIMESTAMP()-7200')
             ->count_all_results();
 
