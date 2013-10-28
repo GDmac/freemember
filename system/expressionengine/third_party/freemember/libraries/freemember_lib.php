@@ -260,7 +260,7 @@ class Freemember_lib
             $reset_url = ee()->functions->create_url($reset_url.'/'.$reset_code);
         } else {
             $reset_url = ee()->functions->fetch_site_index().QUERY_MARKER.
-                'ACT='.ee()->functions->fetch_action_id('Member', 'reset_password').'&id='.$reset_code;
+                'ACT='.ee()->functions->fetch_action_id('Member', 'process_reset_password').'&id='.$reset_code;
         }
 
         // send reset instructions email
