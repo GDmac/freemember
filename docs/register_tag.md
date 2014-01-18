@@ -60,6 +60,10 @@ it defaults to the ``username``.
 In addition, you may submit any of the other member fields (and custom member fields) as
 available in the [Update Profile Tag](update_profile_tag.md).
 
+Note: If you have set any member fields as "required" in the ExpressionEngine control panel,
+you should either make sure that you have also specified those fields in the `require=""` parameter,
+or you should not mark them as required in the control panel.
+
 ### email
 Allow the user to specify their email address. This must be unique across all members in your
 site. Use the field helper to add this to your form::
