@@ -7,6 +7,6 @@ if (defined('APP_VER') && version_compare(APP_VER, '2.6.0', '<')) {
 if ( ! defined('FREEMEMBER_NAME')) {
     define('FREEMEMBER_NAME', 'FreeMember');
     define('FREEMEMBER_CLASS', 'Freemember');
-    define('FREEMEMBER_VERSION', '2.3.0');
+    define('FREEMEMBER_VERSION', '2.3.1');
     define('FREEMEMBER_DOCS', 'https://github.com/expressodev/freemember');
 }
