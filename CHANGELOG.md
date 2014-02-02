@@ -1,5 +1,13 @@
 # FreeMember Release Notes
 
+## FreeMember 2.3.1
+*Released February 2, 2014*
+
+* Fixed reset password link in EE 2.7+
+* Added XID to logout URL to support secure forms in EE 2.7+
+* Fixed logout URL redirecting users to `/index` if they clicked a logout link on the homepage
+* Correctly escape custom field names in SQL select statements
+
 ## FreeMember 2.3.0
 *Released October 20, 2013*
 
