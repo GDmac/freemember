@@ -373,11 +373,7 @@ class Freemember
         $data['hidden_fields']['return_url'] = ee()->TMPL->fetch_param('return');
 
         if ('PREVIOUS_URL' === $data['hidden_fields']['return_url']) {
-            $data['hidden_fields']['return_url'] = isset(ee()->session->tracker[1])
-                ? ee()->session->tracker[1] : '';
-            if ('index' === $data['hidden_fields']['return_url']) {
-                $data['hidden_fields']['return_url'] = '/';
-            }
+            $data['hidden_fields']['return_url'] = $this->history(1);
         }
 
         // prevents errors in case there are no tag params
@@ -397,17 +393,12 @@ class Freemember
     protected function _action_complete($errors = null)
     {
         if (empty($errors)) {
-            if (($return_url = ee()->input->get_post('return_url')) != '') {
-                $return_url = ee()->functions->create_url($return_url);
-                if (isset($_POST['_params']) && ee()->freemember->form_param('secure_return') == 'yes') {
-                    $return_url = str_replace('http://', 'https://', $return_url);
-                }
-            } elseif (isset(ee()->session->tracker[0])) {
-                // back to previous page
-                $return_url = ee()->functions->create_url(ee()->session->tracker[0]);
-            } else {
-                // pretty unlikely anyone will end up here
-                $return_url = ee()->functions->fetch_site_index();
+            // redirect to custom url or current page
+            $return_url = ee()->input->get_post('return_url') ?: $this->history(0);
+            $return_url = ee()->functions->create_url($return_url);
+
+            if (isset($_POST['_params']) && ee()->freemember->form_param('secure_return') == 'yes') {
+                $return_url = str_replace('http://', 'https://', $return_url);
             }
 
             ee()->functions->redirect($return_url);
@@ -416,5 +407,18 @@ class Freemember
         }
 
         return ee()->output->show_user_error(false, $errors);
+    }
+
+    protected function history($id)
+    {
+        $tracker = ee()->session->tracker;
+
+        if (isset($tracker[$id])) {
+            if ($tracker[$id] === 'index') {
+                return '/';
+            }
+
+            return $tracker[$id];
+        }
     }
 }
