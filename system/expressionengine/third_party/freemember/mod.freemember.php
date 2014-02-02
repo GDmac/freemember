@@ -221,17 +221,29 @@ class Freemember
             'ACT='.ee()->functions->fetch_action_id(__CLASS__, 'act_logout').AMP.
             'XID='.ee()->security->generate_xid();
 
-        if ( ! empty($params)) {
+        if (!empty($params)) {
             $url .= '&'.http_build_query($params);
         }
 
-        return $url;
+        if (ee()->config->item('secure_forms') == 'y') {
+            $url .= '&XID={XID_HASH}';
+        }
+
+        return $this->escape($url);
     }
 
     public function act_logout()
     {
         ee()->freemember->logout();
         $this->_action_complete();
+    }
+
+    /**
+     * Escape HTML entities
+     */
+    protected function escape($value)
+    {
+        return htmlentities($value, ENT_QUOTES, 'UTF-8', false);
     }
 
     /**
