@@ -218,8 +218,7 @@ class Freemember
         $params = array_filter(array('return_url' => ee()->TMPL->fetch_param('return')));
 
         $url = ee()->functions->fetch_site_index().QUERY_MARKER.
-            'ACT='.ee()->functions->fetch_action_id(__CLASS__, 'act_logout').AMP.
-            'XID='.ee()->security->generate_xid();
+            'ACT='.ee()->functions->fetch_action_id(__CLASS__, 'act_logout');
 
         if (!empty($params)) {
             $url .= '&'.http_build_query($params);
