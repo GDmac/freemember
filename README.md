@@ -4,6 +4,11 @@ FreeMember is a free add-on for ExpressionEngine 2.2+, which adds powerful inlin
 & authentication tags using the native EE template syntax, instead of using the ugly and inflexible
 static member templates bundled with EE.
 
+## Requirements
+
+* ExpressionEngine 2.6+ (EE Core is not supported)
+* PHP 5.3+
+
 ## Installation
 
 1. Copy the `freemember` folder to `system/expressionengine/third_party` on your server.
