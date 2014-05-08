@@ -1,5 +1,10 @@
 # FreeMember Release Notes
 
+## FreeMember 2.3.2
+*Released May 8, 2014*
+
+* Fixing username parsing in forgot password email (@Abban)
+
 ## FreeMember 2.3.1
 *Released February 2, 2014*
 
