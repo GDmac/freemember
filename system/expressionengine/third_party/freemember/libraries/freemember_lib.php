@@ -269,7 +269,7 @@ class Freemember_lib
         $template = ee()->functions->fetch_email_template('forgot_password_instructions');
 
         $email_vars = array();
-        $email_vars[0]['name'] = $member->username;
+        $email_vars[0]['username'] = $member->username;
         $email_vars[0]['reset_url'] = $reset_url;
         $email_vars[0]['site_name'] = ee()->config->item('site_name');
         $email_vars[0]['site_url'] = ee()->config->item('site_url');
