@@ -8,6 +8,6 @@ if (defined('APP_VER') && !defined('EE_APPPATH') && version_compare(APP_VER, '2.
 if ( ! defined('FREEMEMBER_NAME')) {
     define('FREEMEMBER_NAME', 'FreeMember');
     define('FREEMEMBER_CLASS', 'Freemember');
-    define('FREEMEMBER_VERSION', '2.3.2');
+    define('FREEMEMBER_VERSION', '2.3.3');
     define('FREEMEMBER_DOCS', 'https://github.com/expressodev/freemember');
 }
