@@ -220,6 +220,40 @@ class Freemember_lib
 
         ee()->freemember_model->update_member($member_id, $_POST);
         ee()->freemember_model->update_member_custom($member_id, $_POST);
+
+        // Update forum and comments info if screen_name changed
+        if (isset($_POST['screen_name']) && $_POST['screen_name'] != '' 
+            && ee()->session->userdata('screen_name') != $_POST['screen_name'])
+        {
+            // update forum
+            if(ee()->config->item('forum_is_installed') == "y")
+            {
+                ee()->db->where('forum_last_post_author_id', $member_id);
+                ee()->db->update(
+                    'forums',
+                    array('forum_last_post_author' => $_POST['screen_name'])
+                );
+                ee()->db->where('mod_member_id', $member_id);
+                ee()->db->update(
+                    'forum_moderators',
+                    array('mod_member_name' => $_POST['screen_name'])
+                );
+            }
+
+            // update comments
+            $query = ee()->db->select('module_name')
+                             ->where('module_name', 'Comment')
+                             ->get('modules');
+            
+            if ($query->num_rows() > 0)
+            {
+                ee()->db->where('author_id', $member_id);
+                ee()->db->update(
+                    'comments', 
+                    array('name' => $_POST['screen_name'])
+                    );
+            }
+        }
     }
 
     /**
