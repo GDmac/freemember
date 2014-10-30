@@ -476,6 +476,14 @@ class Freemember_lib
      */
     public function _add_member_validation_rules()
     {
+        // check forbidden="" param
+        $forbidden_fields = explode('|', $this->form_param('forbidden'));
+        foreach ($forbidden_fields as $field) {
+            if(isset($_POST[$field])) {
+                unset($_POST[$field]);
+            }
+        }
+
         // check for require="" param
         $require_fields = explode('|', $this->form_param('require'));
         foreach ($require_fields as $field) {
